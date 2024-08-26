@@ -1,9 +1,8 @@
-import { MateriaCadastrarDto } from '../../materiaEscolar/dto/materia.cadastrar.dto';
-import { IsString, IsArray, ArrayMinSize } from 'class-validator';
 import { Aluno } from '../../Aluno/aluno.entity';
+import { Materia_grade } from '../../materias_grade/materia_grade.entity';
 
 export interface GradeCadastrarDto{
   id?: number;
-  aluno_id: Aluno;
-  materias: MateriaCadastrarDto[];
+  aluno: Aluno;
+  materia_grade: Materia_grade[];
 }

@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Materia } from './materia.entity';
 import { MateriaCadastrarDto } from './dto/materia.cadastrar.dto';
@@ -17,8 +17,9 @@ export class MateriaService {
 
     async cadastrarMateria(data: MateriaCadastrarDto): Promise<ResultadoDto>{
         let materia = new Materia()
-        materia.nome = data.nome
         materia.id = data.id
+        materia.nome = data.nome
+        materia.materia_grade = data.materia_grade
 
         return this.materiaRepository.save(materia)
         .then((result) =>{

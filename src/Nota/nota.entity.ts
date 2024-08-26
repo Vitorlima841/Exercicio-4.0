@@ -2,18 +2,11 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
-  ManyToMany,
-  OneToOne,
   BeforeInsert,
+  OneToOne,
 } from 'typeorm';
-import { Aluno } from '../Aluno/aluno.entity';
-import { Grade } from '../gradeEscolar/grade.entity';
-import { Materia } from '../materiaEscolar/materia.entity';
 import { BadRequestException } from '@nestjs/common';
-import { AlunoCadastrarDto } from '../Aluno/dto/aluno.cadastrar.dto';
-import { MateriaCadastrarDto } from '../materiaEscolar/dto/materia.cadastrar.dto';
+import { Materia_grade } from '../materias_grade/materia_grade.entity';
 
 @Entity()
 export class Nota {
@@ -21,19 +14,16 @@ export class Nota {
   id: number;
 
   @Column('int')
-  valor: number;
+  valor: number[];
+
+  // @Column('boolean')
+  // maior80: boolean;
 
   @Column('boolean')
-  maior80: boolean[]// quando chegar em 3 true, fazer o verificaConcluir como true
+  verificaConcluir: boolean;
 
-  @Column('boolean')
-  verificaConcluir: boolean
-
-  @OneToOne(() => Aluno, aluno => aluno.nota)
-  aluno: Aluno
-
-  @OneToOne(() => Materia, materia => materia.nota)
-  materia: Materia
+  @OneToOne(() => Materia_grade, (materia_grade) => materia_grade.nota)
+  materia_grade: Materia_grade;
 
   @BeforeInsert()
   checkMinimumMaterias() {

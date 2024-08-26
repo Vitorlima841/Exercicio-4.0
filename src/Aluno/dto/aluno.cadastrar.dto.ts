@@ -4,6 +4,5 @@ import { Grade } from '../../gradeEscolar/grade.entity';
 export interface AlunoCadastrarDto{
   id?: number;
   nome: string;
-  Materia: Materia;
-  grade: Grade;
+  grade?: Grade;
 }

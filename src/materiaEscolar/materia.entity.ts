@@ -1,22 +1,20 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany, OneToOne } from 'typeorm';
-import { Aluno } from '../Aluno/aluno.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToMany, JoinTable, OneToMany,
+} from 'typeorm';
 import { Grade } from '../gradeEscolar/grade.entity';
-import { Nota } from '../Nota/nota.entity';
+import { Materia_grade } from '../materias_grade/materia_grade.entity';
 
 @Entity()
 export class Materia {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ length: 100 })
-    nome: string;
+  @Column({ length: 100 })
+  nome: string;
 
-    @ManyToMany(() => Grade, grade => grade.materias)
-    grades: Grade[];
-
-    @ManyToOne(() => Aluno, Aluno => Aluno.Materia)
-    Aluno: Aluno
-
-    @OneToOne(() => Nota, nota => nota.materia)
-    nota: Nota
+  @OneToMany(() => Materia_grade, (materia_grade) => materia_grade.materia)
+  materia_grade: Materia_grade[];
 }

@@ -1,25 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToOne, BeforeInsert, } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne, OneToMany, JoinTable, JoinColumn,
+} from 'typeorm';
 import { Aluno } from '../Aluno/aluno.entity';
-import { Materia } from '../materiaEscolar/materia.entity';
-import { BadRequestException } from '@nestjs/common';
-import { MateriaCadastrarDto } from '../materiaEscolar/dto/materia.cadastrar.dto';
+import { Materia_grade } from '../materias_grade/materia_grade.entity';
 
 @Entity()
 export class Grade {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Aluno, aluno => aluno.grade)
+  @ManyToOne(() => Aluno, (aluno) => aluno.grade)
+  @JoinColumn()
   aluno: Aluno;
 
-  @ManyToMany(() => Materia, materia => materia.grades, { cascade: true })
-  @JoinTable({name: "Grade_materia"})
-  materias: MateriaCadastrarDto[];
-
-  @BeforeInsert()
-  checkMinimumMaterias() {
-    if (this.materias.length < 5) {
-      throw new BadRequestException('A grade deve ter no mínimo 5 matérias.');
-    }
-  }
+  @OneToMany(() => Materia_grade, (materia_grade) => materia_grade.grade)
+  materia_grade: Materia_grade[];
 }
