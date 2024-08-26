@@ -5,7 +5,6 @@ import { GradeCadastrarDto } from './dto/grade.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
 import { GradeModule } from './grade.module';
 import { materia_radeCadastrarDto } from './dto/materia_grade.cadastrar2.dto';
-import { Materia_gradeService } from '../materias_grade/materia_grade.service';
 
 @Controller('Grade')
 export class GradeController{

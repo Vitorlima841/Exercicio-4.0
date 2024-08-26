@@ -3,10 +3,9 @@ import {
   Column,
   PrimaryGeneratedColumn,
   BeforeInsert,
-  OneToOne, ManyToOne,
+  ManyToOne, JoinColumn,
 } from 'typeorm';
 import { BadRequestException } from '@nestjs/common';
-import { Materia_grade } from '../materias_grade/materia_grade.entity';
 import { Materia } from '../materiaEscolar/materia.entity';
 import { Grade } from '../gradeEscolar/grade.entity';
 
@@ -18,14 +17,8 @@ export class Nota {
   @Column('int')
   valor: number[];
 
-  // @Column('boolean')
-  // maior80: boolean;
-
   @Column('boolean')
   verificaConcluir: boolean;
-
-  @ManyToOne(() => Materia_grade, (materia_grade) => materia_grade.nota)
-  materia_grade: Materia_grade;
 
   @ManyToOne(() => Materia, (materia) => materia.nota)
   materia: Materia;
@@ -33,10 +26,10 @@ export class Nota {
   @ManyToOne(() => Grade, (grade) => grade.nota)
   grade: Grade;
 
-  @BeforeInsert()
-  checkMinimumMaterias() {
-    if (this.verificaConcluir) {
-      throw new BadRequestException('O aluno concluiu a materia.');
-    }
-  }
+  // @BeforeInsert()
+  // checkMinimumMaterias() {
+  //   if (this.verificaConcluir) {
+  //     throw new BadRequestException('O aluno concluiu a materia.');
+  //   }
+  // }
 }

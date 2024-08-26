@@ -1,9 +1,11 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Nota } from './nota.entity';
 import { NotaCadastrarDto } from './dto/nota.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
 import { AlunoCadastrarDto } from '../Aluno/dto/aluno.cadastrar.dto';
+import { Aluno } from '../Aluno/aluno.entity';
+import { NotaCadastrar2Dto } from './dto/nota.cadastrar2.dto';
 
 @Injectable()
 export class NotaService {
@@ -16,18 +18,27 @@ export class NotaService {
     return this.notaRepository.find();
   }
 
-  // async mostrarNotas(): Promise<Nota[]> {
-  //   return this.notaRepository.find(
-  //     where{nota.materia_grade = 1}
-  //   );
-  // }
+  async mostrarNotasDoAluno(idAluno: number): Promise<Nota[]> {
+    return this.notaRepository
+      .createQueryBuilder('nota')
+      .innerJoinAndSelect('nota.materia', 'materia')
+      .innerJoinAndSelect('nota.grade', 'grade')
+      .innerJoinAndSelect('grade.aluno', 'aluno')
+      .where('aluno.idteste = :alunoId', { alunoId: idAluno })
+      .getMany();
+  }
 
   async lancarNota(data: NotaCadastrarDto): Promise<ResultadoDto> {
     const nota = new Nota();
     nota.id = data.id;
     nota.valor = data.valor;
     nota.verificaConcluir = data.verificaConcluir;
-    nota.materia_grade = data.materia_grade;
+    nota.materia = data.materia
+    nota.grade = data.grade
+
+    const notas = new Nota()
+
+
 
     // if (nota.valor >= 80) {
     //   for (let i = 0; i < 3; i++) {
@@ -50,6 +61,10 @@ export class NotaService {
     //   nota.verificaConcluir = true;
     // }
 
+    if (nota.verificaConcluir) {
+      throw new BadRequestException('O aluno concluiu a materia.');
+    }
+
     return this.notaRepository
       .save(nota)
       .then((result) => {
@@ -61,7 +76,7 @@ export class NotaService {
       .catch((error) => {
         return <ResultadoDto>{
           status: false,
-          mensagem: 'Nota não cadastrada' + error,
+          mensagem: 'Nota não cadastrada',
         };
       });
   }

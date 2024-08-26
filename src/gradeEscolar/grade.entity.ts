@@ -4,8 +4,8 @@ import {
   ManyToOne, OneToMany, JoinTable, JoinColumn,
 } from 'typeorm';
 import { Aluno } from '../Aluno/aluno.entity';
-import { Materia_grade } from '../materias_grade/materia_grade.entity';
 import { Nota } from '../Nota/nota.entity';
+import { Materia } from '../materiaEscolar/materia.entity';
 
 @Entity()
 export class Grade {
@@ -16,9 +16,9 @@ export class Grade {
   @JoinColumn()
   aluno: Aluno;
 
-  @OneToMany(() => Materia_grade, (materia_grade) => materia_grade.grade)
-  materia_grade: Materia_grade[];
-
-  @OneToMany(() => Nota, (nota) => nota.materia)
+  @OneToMany(() => Nota, (nota) => nota.grade)
   nota: Nota[];
+
+  @ManyToOne(() => Materia, (materia) => materia.grade)
+  materia: Materia[];
 }

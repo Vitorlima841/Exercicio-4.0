@@ -19,7 +19,6 @@ export class MateriaService {
         let materia = new Materia()
         materia.id = data.id
         materia.nome = data.nome
-        materia.materia_grade = data.materia_grade
 
         return this.materiaRepository.save(materia)
         .then((result) =>{

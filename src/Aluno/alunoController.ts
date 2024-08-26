@@ -4,7 +4,7 @@ import { Aluno } from './aluno.entity';
 import { AlunoCadastrarDto } from './dto/aluno.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
 import { AlunoModule } from './aluno.module';
-import { HistoricoAlunoDto } from './dto/Hitorico.Aluno.dto';
+import { HistoricoAlunoDTO} from './dto/Hitorico.Aluno.dto';
 
 @Controller('aluno')
 export class AlunoController{
@@ -20,13 +20,25 @@ export class AlunoController{
     return this.alunoService.cadastrarAluno(data)
   }
 
-  // @Get('historico')
-  // async getTodosHistoricos(): Promise<HistoricoAlunoDto[]> {
-  //   return this.alunoService.getHistoricoAluno();
-  // }
+  @Get('historico')
+  async getTodosHistoricos(): Promise<{
+    nome: string;
+    id: number;
+    grade: {
+      id: number;
+      materia: {
+        nota: {
+          valor: number[]; id: number; verificaConcluir: boolean
+        }[];
+        nome: string; id: number
+      }[]
+    }[]
+  }[]> {
+    return this.alunoService.getHistoricoAluno();
+  }
 
-  // @Get('historico/:alunoId')
-  // async getHistoricoPorAluno(@Param('alunoId') alunoId: number): Promise<HistoricoAlunoDto[]> {
-  //   return this.alunoService.getHistoricoAluno(alunoId);
-  // }
+  @Get('historico/:id')
+  async getHistoricoAlunoID(@Param('id') id: number) {
+    return this.alunoService.getHistoricoAlunoID(id);
+  }
 }
