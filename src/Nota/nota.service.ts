@@ -16,6 +16,12 @@ export class NotaService {
     return this.notaRepository.find();
   }
 
+  // async mostrarNotas(): Promise<Nota[]> {
+  //   return this.notaRepository.find(
+  //     where{nota.materia_grade = 1}
+  //   );
+  // }
+
   async lancarNota(data: NotaCadastrarDto): Promise<ResultadoDto> {
     const nota = new Nota();
     nota.id = data.id;

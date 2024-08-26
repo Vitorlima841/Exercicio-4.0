@@ -25,7 +25,7 @@ export class Materia_gradeService {
         materia_grade.id = data.id
         materia_grade.materia = data.materia
 
-        console.log(materia_grade)
+
 
         return this.materia_gradeRepository.save(materia_grade)
           .then((result) =>{

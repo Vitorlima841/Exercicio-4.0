@@ -28,6 +28,8 @@ export class GradeService {
       throw new BadRequestException('A grade deve ter no mínimo 5 matérias.');
     }
 
+    // this.gradeRepository.update()
+
     return this.gradeRepository.save(grade)
       .then((result) =>{
         return <ResultadoDto>{

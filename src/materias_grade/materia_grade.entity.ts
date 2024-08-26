@@ -1,11 +1,15 @@
 import {
   Entity,
-  PrimaryGeneratedColumn, ManyToOne, BeforeInsert, OneToOne, JoinColumn,
+  PrimaryGeneratedColumn, ManyToOne, BeforeInsert, OneToOne, JoinColumn, OneToMany,
 } from 'typeorm';
 import { Grade } from '../gradeEscolar/grade.entity';
 import { Materia } from '../materiaEscolar/materia.entity';
 import { Nota } from '../Nota/nota.entity';
 import { BadRequestException } from '@nestjs/common';
+
+function OneToMnay(param: () => Nota, param2: (nota) => any) {
+
+}
 
 @Entity()
 export class Materia_grade {
@@ -16,11 +20,11 @@ export class Materia_grade {
   grade: Grade;
 
   @ManyToOne(() => Materia, (materia) => materia.materia_grade)
-  materia: Materia[];
+  materia: Materia
 
-  @OneToOne(() => Nota, (nota) => nota.materia_grade)
+  @OneToMany(() => Nota, (nota) => nota.materia_grade)
   @JoinColumn()
-  nota: Nota;
+  nota: Nota[];
 
   // @BeforeInsert()
   // checkMinimumMaterias() {

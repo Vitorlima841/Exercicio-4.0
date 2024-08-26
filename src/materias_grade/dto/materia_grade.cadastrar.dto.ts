@@ -5,6 +5,6 @@ import { Nota } from '../../Nota/nota.entity';
 export interface Materia_gradeCadastrarDto{
   id?: number;
   grade?: Grade;
-  materia: Materia[];
+  materia: Materia;
   nota?: Nota;
 }
