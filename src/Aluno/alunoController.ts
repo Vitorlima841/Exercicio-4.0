@@ -20,13 +20,13 @@ export class AlunoController{
     return this.alunoService.cadastrarAluno(data)
   }
 
-  // @Get('historico')
-  // async getTodosHistoricos(): Promise<HistoricoAlunoDto[]> {
-  //   return this.alunoService.getHistoricoAluno();
-  // }
+  @Get('historico')
+  async obterHistoricoTodosAlunos() {
+    return this.alunoService.obterHistoricoTodosAlunos();
+  }
 
-  // @Get('historico/:alunoId')
-  // async getHistoricoPorAluno(@Param('alunoId') alunoId: number): Promise<HistoricoAlunoDto[]> {
-  //   return this.alunoService.getHistoricoAluno(alunoId);
-  // }
+  @Get('historico/:id')
+  async obterHistoricoAlunoID(@Param('id') id: number) {
+    return this.alunoService.obterHistoricoAlunoID(id);
+  }
 }

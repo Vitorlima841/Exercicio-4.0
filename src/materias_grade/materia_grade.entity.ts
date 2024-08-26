@@ -23,7 +23,6 @@ export class Materia_grade {
   materia: Materia
 
   @OneToMany(() => Nota, (nota) => nota.materia_grade)
-  @JoinColumn()
   nota: Nota[];
 
   // @BeforeInsert()

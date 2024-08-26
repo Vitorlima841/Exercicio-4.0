@@ -16,6 +16,5 @@ export class Aluno {
   nome: string;
 
   @OneToMany(() => Grade, (grade) => grade.aluno)
-  @JoinColumn()
-  grade: Grade;
+  grade: Grade[];
 }

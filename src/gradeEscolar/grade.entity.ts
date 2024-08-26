@@ -13,12 +13,8 @@ export class Grade {
   id: number;
 
   @ManyToOne(() => Aluno, (aluno) => aluno.grade)
-  @JoinColumn()
   aluno: Aluno;
 
   @OneToMany(() => Materia_grade, (materia_grade) => materia_grade.grade)
   materia_grade: Materia_grade[];
-
-  @OneToMany(() => Nota, (nota) => nota.materia)
-  nota: Nota[];
 }

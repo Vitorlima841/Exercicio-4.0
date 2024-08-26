@@ -3,7 +3,6 @@ import { Materia_gradeService } from './materia_grade.service';
 import { Materia_grade } from './materia_grade.entity';
 import { ResultadoDto } from '../dto/resultado.dto';
 import { Materia_gradeCadastrarDto } from './dto/materia_grade.cadastrar.dto';
-import { materia_radeCadastrarDto } from '../gradeEscolar/dto/materia_grade.cadastrar2.dto';
 
 @Controller('materia_grade')
 export class Materia_gradeController{

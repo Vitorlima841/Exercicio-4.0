@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { Nota } from './nota.entity';
 import { NotaCadastrarDto } from './dto/nota.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
@@ -16,12 +16,6 @@ export class NotaService {
     return this.notaRepository.find();
   }
 
-  // async mostrarNotas(): Promise<Nota[]> {
-  //   return this.notaRepository.find(
-  //     where{nota.materia_grade = 1}
-  //   );
-  // }
-
   async lancarNota(data: NotaCadastrarDto): Promise<ResultadoDto> {
     const nota = new Nota();
     nota.id = data.id;
@@ -29,26 +23,18 @@ export class NotaService {
     nota.verificaConcluir = data.verificaConcluir;
     nota.materia_grade = data.materia_grade;
 
-    // if (nota.valor >= 80) {
-    //   for (let i = 0; i < 3; i++) {
-    //     if (nota.maior80[i] == false) {
-    //       nota.maior80[i] = true;
-    //     }
-    //   }
-    // }
+    const count = await this.notaRepository.count({
+      where: {
+        valor: MoreThan(80),
+        materia_grade: {
+          id: data.materia_grade.id // Supondo que `materia_grade` é um objeto com um `id`
+        }
+      }
+    });
 
+    console.log(count)
 
-
-    // let verificaMaior80 = 0;
-    // for (let i = 0; i < nota.valor.length; i++) {
-    //   if (nota.valor[i] >= 80) {
-    //     verificaMaior80++;
-    //   }
-    // }
-    //
-    // if (verificaMaior80 == 3) {
-    //   nota.verificaConcluir = true;
-    // }
+    nota.verificaConcluir = count >= 2;
 
     return this.notaRepository
       .save(nota)

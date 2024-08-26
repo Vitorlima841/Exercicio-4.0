@@ -18,20 +18,11 @@ export class Nota {
   @Column('int')
   valor: number[];
 
-  // @Column('boolean')
-  // maior80: boolean;
-
-  @Column('boolean')
+  @Column({ default: false })
   verificaConcluir: boolean;
 
   @ManyToOne(() => Materia_grade, (materia_grade) => materia_grade.nota)
   materia_grade: Materia_grade;
-
-  @ManyToOne(() => Materia, (materia) => materia.nota)
-  materia: Materia;
-
-  @ManyToOne(() => Grade, (grade) => grade.nota)
-  grade: Grade;
 
   @BeforeInsert()
   checkMinimumMaterias() {

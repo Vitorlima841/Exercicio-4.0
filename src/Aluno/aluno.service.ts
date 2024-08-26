@@ -1,9 +1,8 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Aluno } from './aluno.entity';
 import { AlunoCadastrarDto } from './dto/aluno.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
-import { HistoricoAlunoDto } from './dto/Hitorico.Aluno.dto';
 
 @Injectable()
 export class AlunoService {
@@ -35,23 +34,54 @@ export class AlunoService {
         }
       })
   }
-  // async getHistoricoAluno(alunoId?: number): Promise<HistoricoAlunoDto[]> {
-  //   if (alunoId) {
-  //     const aluno = await this.alunoRepository.find(alunoId);
-  //
-  //     // Processar e formatar os dados do histórico para o aluno específico
-  //     // ...
-  //
-  //     return formattedHistorico;
-  //   } else {
-  //     const alunos = await this.alunoRepository.find();
-  //     // Processar e formatar os dados de todos os alunos
-  //     // ...
-  //
-  //     return formattedHistoricos;
-  //   }
-  // }
+
+  async obterHistoricoTodosAlunos(): Promise<any[]> {
+    const alunos = await this.alunoRepository.find({
+      relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
+    });
+
+    if (!alunos || alunos.length === 0) {
+      throw new NotFoundException('Nenhum aluno encontrado');
+    }
+
+    return alunos.map(aluno => ({
+      nome: aluno.nome,
+      idaluno: aluno.id,
+      grades: aluno.grade.map(grade => ({
+        gradeId: grade.id,
+        materias: grade.materia_grade.map(materia_grade => ({
+          materia: materia_grade.materia.nome,
+          notas: materia_grade.nota.map(nota => ({
+            valor: nota.valor,
+            verificaConcluir: nota.verificaConcluir,
+          })),
+        })),
+      })),
+    }));
+  }
 
 
+  async obterHistoricoAlunoID(alunoId: number): Promise<any> {
+    const aluno = await this.alunoRepository.findOne({
+      where: { id: alunoId },
+      relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
+    });
 
+    if (!aluno) {
+      throw new NotFoundException('Aluno não encontrado');
+    }
+
+    return aluno.grade.map(grade => ({
+      nome: aluno.nome,
+      idaluno: aluno.id,
+      gradeId: grade.id,
+      materia: grade.materia_grade.map(materia_grade => ({
+        materia: materia_grade.materia.nome,
+        nota: materia_grade.nota.map(nota => ({
+          valor: nota.valor,
+          verificaConcluir: nota.verificaConcluir,
+        }))
+      }))
+    }));
+  }
 }

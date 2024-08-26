@@ -19,6 +19,6 @@ export class Materia {
   @OneToMany(() => Materia_grade, (materia_grade) => materia_grade.materia)
   materia_grade: Materia_grade[];
 
-  @OneToMany(() => Nota, (nota) => nota.materia)
-  nota: Nota[];
+  // @OneToMany(() => Nota, (nota) => nota.materia)
+  // nota: Nota[];
 }
