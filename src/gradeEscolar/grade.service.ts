@@ -3,8 +3,6 @@ import { Repository } from 'typeorm';
 import { Grade } from './grade.entity';
 import { GradeCadastrarDto } from './dto/grade.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
-import { Materia_gradeService } from '../materias_grade/materia_grade.service';
-import { materia_radeCadastrarDto } from './dto/materia_grade.cadastrar2.dto';
 
 @Injectable()
 export class GradeService {

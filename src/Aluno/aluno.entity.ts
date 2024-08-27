@@ -2,8 +2,7 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  JoinColumn,
-  OneToMany, JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { Grade } from '../gradeEscolar/grade.entity';
 

@@ -1,15 +1,10 @@
 import {
   Entity,
-  PrimaryGeneratedColumn, ManyToOne, BeforeInsert, OneToOne, JoinColumn, OneToMany,
+  PrimaryGeneratedColumn, ManyToOne,OneToMany,
 } from 'typeorm';
 import { Grade } from '../gradeEscolar/grade.entity';
 import { Materia } from '../materiaEscolar/materia.entity';
 import { Nota } from '../Nota/nota.entity';
-import { BadRequestException } from '@nestjs/common';
-
-function OneToMnay(param: () => Nota, param2: (nota) => any) {
-
-}
 
 @Entity()
 export class Materia_grade {
@@ -24,11 +19,4 @@ export class Materia_grade {
 
   @OneToMany(() => Nota, (nota) => nota.materia_grade)
   nota: Nota[];
-
-  // @BeforeInsert()
-  // checkMinimumMaterias() {
-  //   if (this.materia.length < 5) {
-  //     throw new BadRequestException('A grade deve ter no mínimo 5 matérias.');
-  //   }
-  // }
 }

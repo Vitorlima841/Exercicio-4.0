@@ -1,4 +1,4 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Aluno } from './aluno.entity';
 import { AlunoCadastrarDto } from './dto/aluno.cadastrar.dto';
@@ -34,6 +34,47 @@ export class AlunoService {
         }
       })
   }
+
+  async obterHistoricoTodosAlunosOrdenados(): Promise<any[]> {
+    // Buscando todos os alunos com as relações necessárias
+    const alunos = await this.alunoRepository.find({
+      relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
+    });
+
+    if (!alunos || alunos.length === 0) {
+      throw new NotFoundException('Nenhum aluno encontrado');
+    }
+
+    // Processando e calculando o score para cada aluno
+    const alunosComScores = alunos.map(aluno => {
+      // Calculando o maior score do aluno
+      const score = aluno.grade.flatMap(grade =>
+        grade.materia_grade.flatMap(materia_grade =>
+          materia_grade.nota.map(nota => nota.valor)
+        )
+      ).reduce((max, nota) => Math.max(max, nota), 0);
+
+      return {
+        nome: aluno.nome,
+        idaluno: aluno.id,
+        score, // Adicionando o score ao resultado
+        grades: aluno.grade.map(grade => ({
+          gradeId: grade.id,
+          materias: grade.materia_grade.map(materia_grade => ({
+            materia: materia_grade.materia.nome,
+            notas: materia_grade.nota.map(nota => ({
+              valor: nota.valor,
+              verificaConcluir: nota.verificaConcluir,
+            })),
+          })),
+        })),
+      };
+    });
+
+    // Ordenando os alunos pelo score, em ordem decrescente
+    return alunosComScores.sort((a, b) => b.score - a.score);
+  }
+
 
   async obterHistoricoTodosAlunos(): Promise<any[]> {
     const alunos = await this.alunoRepository.find({
