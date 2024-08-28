@@ -33,33 +33,37 @@ export class NotaService {
     nota.valor = data.valor;
     nota.materia_grade = data.materia_grade;
     nota.verificaConcluir = false;
-    nota.verificaConcluir = data.verificaConcluir;
-    nota.materia = data.materia
-    nota.grade = data.grade
 
-    const notas = new Nota()
-
-
-
+    //Pega todas as notas da meteria_grade
     const todasNotas = await this.notaRepository.createQueryBuilder('nota')
       .where('nota.materia_grade = :materiaGradeId', { materiaGradeId: data.materia_grade })
       .getMany();
 
+    // So entra no if caso ja tenho 2 notas dentro do banco dedados
     if (todasNotas.length === 2) {
-      for (const notaExistente of todasNotas) {
-        // Verifica se alguma das notas é menor que 80
-        if (notaExistente.valor < 80) {
-          // Se existir, deletar todas as notas para essa matéria_grade
-          await this.notaRepository.createQueryBuilder('nota')
-            .delete()
-            .from('nota')
-            .where('nota.materiaGradeId = :materiaGradeId', { materiaGradeId: data.materia_grade })
-            .execute()
-          throw new BadRequestException('Existem notas menores que 80. Todas as notas foram deletadas e é necessário reiniciar as notas para essa matéria.');
+      let hasNotaMenorQue80 = false;
+
+      for (const notaExistente of todasNotas) {// If é necessário pois estou deixando ele colocar 3 notas, para no final conferir se alguma é menor que 80
+        // Verifica se alguma das notas anteriores é menor que 80
+        if (notaExistente.valor < 80 || nota.valor < 80) {
+          hasNotaMenorQue80 = true;
+          break;
         }
       }
+
+      if (hasNotaMenorQue80) {
+        // Se existir, deletar todas as notas para essa matéria_grade
+        await this.notaRepository.createQueryBuilder('nota')
+          .delete()
+          .where('nota.materiaGradeId = :materiaGradeId', { materiaGradeId: data.materia_grade })
+          .execute();
+
+        throw new BadRequestException('Existem notas menores que 80. Todas as notas foram deletadas e é necessário reiniciar as notas para essa matéria.');
+      }
+
       // Se não houver notas menores que 80, a matéria é concluída
-      nota.verificaConcluir = true;
+      nota.verificaConcluir = true;// Olhar, pois ele esta dando esse erro antes de cadastrar a ultima nota
+      await this.notaRepository.save(nota)
       throw new BadRequestException('O aluno concluiu a matéria com 3 notas acima de 80.');
     }
 
@@ -67,6 +71,7 @@ export class NotaService {
       throw new BadRequestException('O aluno concluiu a materia.');
     }
 
+    // Salvar a nova nota
     return this.notaRepository
       .save(nota)
       .then((result) => {
@@ -78,8 +83,9 @@ export class NotaService {
       .catch((error) => {
         return <ResultadoDto>{
           status: false,
-          mensagem: 'Nota não cadastrada',
+          mensagem: 'Nota não cadastrada: ' + error,
         };
       });
   }
+
 }

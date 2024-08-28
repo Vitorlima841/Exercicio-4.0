@@ -3,8 +3,6 @@ import { AlunoService } from './aluno.service';
 import { Aluno } from './aluno.entity';
 import { AlunoCadastrarDto } from './dto/aluno.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
-import { AlunoModule } from './aluno.module';
-import { HistoricoAlunoDTO} from './dto/Hitorico.Aluno.dto';
 
 @Controller('aluno')
 export class AlunoController{
@@ -34,7 +32,7 @@ export class AlunoController{
   async obterHistoricoAlunoID(@Param('id') id: number) {
     return this.alunoService.obterHistoricoAlunoID(id);
   }
-  @Get('historicoOrdenados')
+  @Get('historicosOrdenados')
   async obterHistoricoTodosAlunosOrdenados() {
     return this.alunoService.obterHistoricoTodosAlunosOrdenados();
   }

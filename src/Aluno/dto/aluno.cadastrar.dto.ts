@@ -2,7 +2,7 @@ import { Materia } from '../../materiaEscolar/materia.entity';
 import { Grade } from '../../gradeEscolar/grade.entity';
 
 export interface AlunoCadastrarDto{
-  idteste?: number;
+  id?: number;
   nome: string;
   grade?: Grade[];
 }

@@ -1,10 +1,8 @@
 import { Aluno } from '../../Aluno/aluno.entity';
-import { Nota } from '../../Nota/nota.entity';
-import { Materia } from '../../materiaEscolar/materia.entity';
+import { Materia_grade } from '../../materias_grade/materia_grade.entity';
 
 export interface GradeCadastrarDto{
   id?: number;
   aluno: Aluno;
-  nota?: Nota[];
-  materia: Materia[];
+  materia_grade: Materia_grade[];
 }

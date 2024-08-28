@@ -3,7 +3,6 @@ import { Repository } from 'typeorm';
 import { Aluno } from './aluno.entity';
 import { AlunoCadastrarDto } from './dto/aluno.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
-import { HistoricoAlunoDTO} from './dto/Hitorico.Aluno.dto';
 
 @Injectable()
 export class AlunoService {
@@ -23,7 +22,7 @@ export class AlunoService {
   async cadastrarAluno(data: AlunoCadastrarDto): Promise<ResultadoDto>{
     let aluno = new Aluno()
     aluno.nome = data.nome
-    aluno.idteste = data.idteste
+    aluno.id = data.id
     aluno.grade = data.grade
     return this.alunoRepository.save(aluno)
       .then((result) =>{
@@ -41,28 +40,32 @@ export class AlunoService {
   }
 
   async obterHistoricoTodosAlunosOrdenados(): Promise<any[]> {
-    // Buscando todos os alunos com as relações necessárias
-    const alunos = await this.alunoRepository.find({
-      relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
-    });
+      // Buscando todos os alunos com as relações necessárias
+      const alunos = await this.alunoRepository.find({
+        relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
+      });
 
-    if (!alunos || alunos.length === 0) {
+      if (!alunos || alunos.length === 0) {
       throw new NotFoundException('Nenhum aluno encontrado');
     }
 
-    // Processando e calculando o score para cada aluno
+    // Processando e calculando a média de notas para cada aluno
     const alunosComScores = alunos.map(aluno => {
-      // Calculando o maior score do aluno
-      const score = aluno.grade.flatMap(grade =>
+      // Coletando todas as notas do aluno
+      const notas = aluno.grade.flatMap(grade =>
         grade.materia_grade.flatMap(materia_grade =>
           materia_grade.nota.map(nota => nota.valor)
         )
-      ).reduce((max, nota) => Math.max(max, nota), 0);
+      );
+
+      // Calculando a média das notas
+      const somaNotas = notas.reduce((total, nota) => total + nota, 0);
+      const mediaNotas = notas.length > 0 ? somaNotas / notas.length : 0;
 
       return {
         nome: aluno.nome,
         idaluno: aluno.id,
-        score, // Adicionando o score ao resultado
+        media: mediaNotas, // Mantendo como número para ordenação
         grades: aluno.grade.map(grade => ({
           gradeId: grade.id,
           materias: grade.materia_grade.map(materia_grade => ({
@@ -76,47 +79,57 @@ export class AlunoService {
       };
     });
 
-    // Ordenando os alunos pelo score, em ordem decrescente
-    return alunosComScores.sort((a, b) => b.score - a.score);
-  }
+    // Ordenando os alunos pela média, em ordem decrescente
+    const alunosOrdenados = alunosComScores.sort((a, b) => b.media - a.media);
 
-
-  async obterHistoricoTodosAlunos(): Promise<any[]> {
-    const alunos = await this.alunoRepository.find({
-      relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
-    });
-  async getHistoricoAlunoID(alunoId: number) {
-    const aluno = await this.alunoRepository.findOne({
-      where: { idteste: alunoId },
-      relations: ['grade', 'grade.materia', 'grade.nota'],
-    });
-
-    if (!aluno) {
-      throw new Error('Aluno não encontrado');
-    }
-
-    return aluno;
-  }
-
-    if (!alunos || alunos.length === 0) {
-      throw new NotFoundException('Nenhum aluno encontrado');
-    }
-
-    return alunos.map(aluno => ({
-      nome: aluno.nome,
-      idaluno: aluno.id,
-      grades: aluno.grade.map(grade => ({
-        gradeId: grade.id,
-        materias: grade.materia_grade.map(materia_grade => ({
-          materia: materia_grade.materia.nome,
-          notas: materia_grade.nota.map(nota => ({
-            valor: nota.valor,
-            verificaConcluir: nota.verificaConcluir,
-          })),
-        })),
-      })),
+    // Formatando a média para exibição com uma casa decimal
+    return alunosOrdenados.map(aluno => ({
+      ...aluno,
+      media: parseFloat(aluno.media.toFixed(1)), // Formatando a média para 1 casa decimal
     }));
   }
+
+
+
+    async obterHistoricoTodosAlunos(): Promise<any[]> {
+    return await this.alunoRepository.find({
+      relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
+    });
+  }
+
+  // async getHistoricoAlunoID(alunoId: number) {
+  //   const aluno = await this.alunoRepository.findOne({
+  //     where: { idteste: alunoId },
+  //     relations: ['grade', 'grade.materia', 'grade.nota'],
+  //   });
+  //
+  //   if (!aluno) {
+  //     throw new Error('Aluno não encontrado');
+  //   }
+  //
+  //   return aluno;
+  // }
+
+
+  //   if (!alunos || alunos.length === 0) {
+  //     throw new NotFoundException('Nenhum aluno encontrado');
+  //   }
+  //
+  //   return alunos.map(aluno => ({
+  //     nome: aluno.nome,
+  //     idaluno: aluno.id,
+  //     grades: aluno.grade.map(grade => ({
+  //       gradeId: grade.id,
+  //       materias: grade.materia_grade.map(materia_grade => ({
+  //         materia: materia_grade.materia.nome,
+  //         notas: materia_grade.nota.map(nota => ({
+  //           valor: nota.valor,
+  //           verificaConcluir: nota.verificaConcluir,
+  //         })),
+  //       })),
+  //     })),
+  //   }));
+  // }
 
 
   async obterHistoricoAlunoID(alunoId: number): Promise<any> {
