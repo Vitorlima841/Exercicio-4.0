@@ -40,7 +40,7 @@ export class NotaService {
       .getMany();
 
     // So entra no if caso ja tenho 2 notas dentro do banco dedados
-    if (todasNotas.length === 2) {
+    if (todasNotas.length >= 2) {
       let hasNotaMenorQue80 = false;
 
       for (const notaExistente of todasNotas) {// If é necessário pois estou deixando ele colocar 3 notas, para no final conferir se alguma é menor que 80
@@ -62,15 +62,12 @@ export class NotaService {
       }
 
       // Se não houver notas menores que 80, a matéria é concluída
-      nota.verificaConcluir = true;// Olhar, pois ele esta dando esse erro antes de cadastrar a ultima nota
-      await this.notaRepository.save(nota)
-      throw new BadRequestException('O aluno concluiu a matéria com 3 notas acima de 80.');
+      nota.verificaConcluir = true;
+      if(todasNotas.length !== 2){
+        // Caso tente adicionar mais uma nota em uma materia concluida
+        throw new BadRequestException('O aluno concluiu a matéria com 3 notas acima de 80.');
+      }
     }
-
-    if (nota.verificaConcluir) {
-      throw new BadRequestException('O aluno concluiu a materia.');
-    }
-
     // Salvar a nova nota
     return this.notaRepository
       .save(nota)

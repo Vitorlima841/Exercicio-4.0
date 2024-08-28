@@ -1,14 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../src/app.module'; // ajuste o caminho conforme necessário
+import { AppModule } from './../src/app.module';
+import { MateriaService } from '../src/materiaEscolar/materia.service';
+import { Materia } from '../src/materiaEscolar/materia.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Aluno } from '../src/Aluno/aluno.entity'; // ajuste o caminho conforme necessário
 import { Repository } from 'typeorm';
 
-describe('AlunoController (e2e)', () => {
+describe('Materia Controller (e2e)', () => {
   let app: INestApplication;
-  let alunoRepository: Repository<Aluno>;
+  let materiaService: MateriaService;
+  let materiaRepository: Repository<Materia>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -18,29 +20,41 @@ describe('AlunoController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
 
-    alunoRepository = moduleFixture.get<Repository<Aluno>>(getRepositoryToken(Aluno));
+    materiaService = moduleFixture.get<MateriaService>(MateriaService);
+    materiaRepository = moduleFixture.get<Repository<Materia>>(getRepositoryToken(Materia));
   });
 
-  it('GET /mostrarAlunoID/:id should return aluno by ID', async () => {
-    // Crie um aluno para teste
-    const aluno = await alunoRepository.save({
-      nome: 'João',
-      idade: 20,
-      // outros campos necessários
-    });
+  afterEach(async () => {
+    // Clean up database after each test
+    if (materiaRepository) {
+      await materiaRepository.query('DELETE FROM materia'); // Adjust based on your database
+    }
+  });
 
-    // Envie a solicitação GET
-    const response = await request(app.getHttpServer())
-      .get(`/mostrarAlunoID/${aluno.id}`)
-      .expect(200);
+  it('/POST /materia/cadastrarMateria should create a materia', async () => {
+    const createMateriaDto = { nome: 'Matematica' };
 
-    // Verifique a resposta
-    expect(response.body).toEqual({
-      id: aluno.id,
-      nome: aluno.nome,
-      idade: aluno.idade,
-      // outros campos esperados
-    });
+    return request(app.getHttpServer())
+      .post('/materia/cadastrarMateria') // Ajuste aqui para coincidir com o controlador
+      .send(createMateriaDto)
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.status).toBe(true);
+        expect(body.mensagem).toBe('Materia cadastrada!');
+      });
+  });
+
+  it('/POST /materia/cadastrarMateria should fail with invalid data', async () => {
+    const invalidDto = { nome: '' }; // Assuming nome should not be empty
+
+    return request(app.getHttpServer())
+      .post('/materia/cadastrarMateria') // Ajuste aqui para coincidir com o controlador
+      .send(invalidDto)
+      .expect(400) // Adjust the status code based on your error handling
+      .expect(({ body }) => {
+        expect(body.status).toBe(false);
+        expect(body.mensagem).toBe('Materia não cadastrada');
+      });
   });
 
   afterAll(async () => {
