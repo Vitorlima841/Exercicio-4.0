@@ -15,6 +15,10 @@ export class AlunoService {
     return this.alunoRepository.find();
   }
 
+  async mostrarAlunosID(id : number): Promise<Aluno | null> {
+    return this.alunoRepository.findOneBy({ id });
+  }
+
   async cadastrarAluno(data: AlunoCadastrarDto): Promise<ResultadoDto>{
     let aluno = new Aluno()
     aluno.nome = data.nome
