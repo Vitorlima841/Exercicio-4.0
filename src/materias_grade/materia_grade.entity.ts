@@ -1,6 +1,6 @@
 import {
   Entity,
-  PrimaryGeneratedColumn, ManyToOne,OneToMany,
+  PrimaryGeneratedColumn, ManyToOne, OneToMany, Column,
 } from 'typeorm';
 import { Grade } from '../gradeEscolar/grade.entity';
 import { Materia } from '../materiaEscolar/materia.entity';
@@ -10,6 +10,9 @@ import { Nota } from '../Nota/nota.entity';
 export class Materia_grade {
   @PrimaryGeneratedColumn()
   id: number;
+
+  // @Column()
+  // materiaConcluida: boolean;
 
   @ManyToOne(() => Grade, (grade) => grade.materia_grade)
   grade: Grade;

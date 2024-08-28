@@ -16,7 +16,6 @@ export class Grade {
   id: number;
 
   @ManyToOne(() => Aluno, (aluno) => aluno.grade, { nullable: false } )
-  @JoinColumn({ name: 'alunoId' }) // Opcional, para especificar o nome da coluna no banco de dados
   aluno: Aluno;
 
   @OneToMany(() => Materia_grade, (materia_grade) => materia_grade.grade)

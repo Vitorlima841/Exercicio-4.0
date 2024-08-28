@@ -1,6 +1,5 @@
 import { IsNumber, Min, Max, IsBoolean } from 'class-validator';
 import { Materia_grade } from '../../materias_grade/materia_grade.entity';
-import { IsNumber, IsUUID, Min, Max, IsBoolean } from 'class-validator';
 import { Materia } from '../../materiaEscolar/materia.entity';
 import { Grade } from '../../gradeEscolar/grade.entity';
 
@@ -14,5 +13,7 @@ export class NotaCadastrarDto {
 
   @IsBoolean()
   verificaConcluir?: boolean;
+
+  materia_grade: Materia_grade;
 
 }
