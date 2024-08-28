@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { Grade } from './grade.entity';
 import { GradeCadastrarDto } from './dto/grade.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
+import { materia_radeCadastrarDto } from './dto/materia_grade.cadastrar2.dto';
 
 @Injectable()
 export class GradeService {
@@ -20,13 +21,11 @@ export class GradeService {
     let grade = new Grade()
     grade.id = data.id
     grade.aluno = data.aluno
-    grade.materia_grade = data.materia_grade
+    grade.materia = data.materia
 
-    if(grade.materia_grade.length < 5){
+    if(grade.materia.length < 5){
       throw new BadRequestException('A grade deve ter no mínimo 5 matérias.');
     }
-
-    // this.gradeRepository.update()
 
     return this.gradeRepository.save(grade)
       .then((result) =>{

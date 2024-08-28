@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { Aluno } from './aluno.entity';
 import { AlunoCadastrarDto } from './dto/aluno.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
+import { HistoricoAlunoDTO} from './dto/Hitorico.Aluno.dto';
 
 @Injectable()
 export class AlunoService {
@@ -22,7 +23,7 @@ export class AlunoService {
   async cadastrarAluno(data: AlunoCadastrarDto): Promise<ResultadoDto>{
     let aluno = new Aluno()
     aluno.nome = data.nome
-    aluno.id = data.id
+    aluno.idteste = data.idteste
     aluno.grade = data.grade
     return this.alunoRepository.save(aluno)
       .then((result) =>{
@@ -84,6 +85,18 @@ export class AlunoService {
     const alunos = await this.alunoRepository.find({
       relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
     });
+  async getHistoricoAlunoID(alunoId: number) {
+    const aluno = await this.alunoRepository.findOne({
+      where: { idteste: alunoId },
+      relations: ['grade', 'grade.materia', 'grade.nota'],
+    });
+
+    if (!aluno) {
+      throw new Error('Aluno não encontrado');
+    }
+
+    return aluno;
+  }
 
     if (!alunos || alunos.length === 0) {
       throw new NotFoundException('Nenhum aluno encontrado');

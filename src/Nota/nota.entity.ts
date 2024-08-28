@@ -5,6 +5,9 @@ import {
   ManyToOne
 } from 'typeorm';
 import { Materia_grade } from '../materias_grade/materia_grade.entity';
+import { BadRequestException } from '@nestjs/common';
+import { Materia } from '../materiaEscolar/materia.entity';
+import { Grade } from '../gradeEscolar/grade.entity';
 
 @Entity()
 export class Nota {

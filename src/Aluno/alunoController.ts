@@ -3,6 +3,8 @@ import { AlunoService } from './aluno.service';
 import { Aluno } from './aluno.entity';
 import { AlunoCadastrarDto } from './dto/aluno.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
+import { AlunoModule } from './aluno.module';
+import { HistoricoAlunoDTO} from './dto/Hitorico.Aluno.dto';
 
 @Controller('aluno')
 export class AlunoController{

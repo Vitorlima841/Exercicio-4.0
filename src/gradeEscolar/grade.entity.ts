@@ -7,6 +7,8 @@ import {
 } from 'typeorm';
 import { Aluno } from '../Aluno/aluno.entity';
 import { Materia_grade } from '../materias_grade/materia_grade.entity';
+import { Nota } from '../Nota/nota.entity';
+import { Materia } from '../materiaEscolar/materia.entity';
 
 @Entity()
 export class Grade {
