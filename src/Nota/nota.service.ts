@@ -68,6 +68,15 @@ export class NotaService {
         throw new BadRequestException('O aluno concluiu a matéria com 3 notas acima de 80.');
       }
     }
+      nota.verificaConcluir = true;// Olhar, pois ele esta dando esse erro antes de cadastrar a ultima nota
+      await this.notaRepository.save(nota)
+      throw new BadRequestException('O aluno concluiu a matéria com 3 notas acima de 80.');
+    }
+
+    if (nota.verificaConcluir) {
+      throw new BadRequestException('O aluno concluiu a materia.');
+    }
+
     // Salvar a nova nota
     return this.notaRepository
       .save(nota)
