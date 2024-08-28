@@ -17,6 +17,7 @@ export class Materia_gradeController{
   async cadastrarMateria_grade(@Body()data: Materia_gradeCadastrarDto): Promise<ResultadoDto>{
     return this.materia_gradeService.cadastrarMateria_grade(data)
   }
+}
 // import { Body, Controller, Get, Post } from '@nestjs/common';
 // import { Materia_gradeService } from './materia_grade.service';
 // import { Materia_grade } from './materia_grade.entity';

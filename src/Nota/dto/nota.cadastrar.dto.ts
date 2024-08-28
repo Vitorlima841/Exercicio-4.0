@@ -15,5 +15,4 @@ export class NotaCadastrarDto {
   @IsBoolean()
   verificaConcluir?: boolean;
 
-  materia_grade: Materia_grade;
 }

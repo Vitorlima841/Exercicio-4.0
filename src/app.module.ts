@@ -13,7 +13,6 @@ import { Materia_gradeModule } from './materias_grade/materia_grade.module';
       AlunoModule,
       GradeModule,
       NotaModule,
-      Materia_gradeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
