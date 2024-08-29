@@ -52,7 +52,7 @@ export class NotaService {
 
       // Verifica se alguma das notas anteriores ou a atual é menor que 80
       for (const notaExistente of todasNotas) {
-        if (notaExistente.valor < 80 || nota.valor < 80) {
+        if (notaExistente.valor < 80 || nota.valor < 80 && todasNotas. length < 3) {
           hasNotaMenorQue80 = true;
           break;
         }

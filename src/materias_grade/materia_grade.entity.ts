@@ -11,9 +11,6 @@ export class Materia_grade {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @Column()
-  // materiaConcluida: boolean;
-
   @ManyToOne(() => Grade, (grade) => grade.materia_grade)
   grade: Grade;
 

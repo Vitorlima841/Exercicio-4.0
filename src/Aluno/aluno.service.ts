@@ -98,68 +98,35 @@ export class AlunoService {
 
 
 
-    async obterHistoricoTodosAlunos(): Promise<any[]> {
+  async obterHistoricoTodosAlunos(): Promise<Aluno[]> {
     return await this.alunoRepository.find({
       relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
     });
   }
 
-  // async getHistoricoAlunoID(alunoId: number) {
-  //   const aluno = await this.alunoRepository.findOne({
-  //     where: { idteste: alunoId },
-  //     relations: ['grade', 'grade.materia', 'grade.nota'],
-  //   });
-  //
-  //   if (!aluno) {
-  //     throw new Error('Aluno não encontrado');
-  //   }
-  //
-  //   return aluno;
-  // }
-
-
-  //   if (!alunos || alunos.length === 0) {
-  //     throw new NotFoundException('Nenhum aluno encontrado');
-  //   }
-  //
-  //   return alunos.map(aluno => ({
-  //     nome: aluno.nome,
-  //     idaluno: aluno.id,
-  //     grades: aluno.grade.map(grade => ({
-  //       gradeId: grade.id,
-  //       materias: grade.materia_grade.map(materia_grade => ({
-  //         materia: materia_grade.materia.nome,
-  //         notas: materia_grade.nota.map(nota => ({
-  //           valor: nota.valor,
-  //           verificaConcluir: nota.verificaConcluir,
-  //         })),
-  //       })),
-  //     })),
-  //   }));
-  // }
-
-
   async obterHistoricoAlunoID(alunoId: number): Promise<any> {
-    const aluno = await this.alunoRepository.findOne({
+    return await this.alunoRepository.findOne({
       where: { id: alunoId },
       relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
     });
 
-    if (!aluno) {
-      throw new NotFoundException('Aluno não encontrado');
-    }
+    // if (!aluno) {
+    //   throw new NotFoundException('Aluno não encontrado');
+    // }
 
-    return aluno.grade.map(grade => ({
-      nome: aluno.nome,
-      idaluno: aluno.id,
-      gradeId: grade.id,
-      materia: grade.materia_grade.map(materia_grade => ({
-        materia: materia_grade.materia.nome,
-        nota: materia_grade.nota.map(nota => ({
-          valor: nota.valor,
-          verificaConcluir: nota.verificaConcluir,
-        }))
-      }))
-    }));
+
+
+    // return aluno.grade.map(grade => ({
+    //   nome: aluno.nome,
+    //   idaluno: aluno.id,
+    //   gradeId: grade.id,
+    //   materia: grade.materia_grade.map(materia_grade => ({
+    //     materia: materia_grade.materia.nome,
+    //     nota: materia_grade.nota.map(nota => ({
+    //       valor: nota.valor,
+    //       verificaConcluir: nota.verificaConcluir,
+    //     }))
+    //   }))
+    // }));
   }
 }

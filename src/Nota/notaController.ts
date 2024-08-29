@@ -3,7 +3,6 @@ import { NotaService } from './nota.service';
 import { Nota } from './nota.entity';
 import { NotaCadastrarDto } from './dto/nota.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
-import { NotaCadastrar2Dto } from './dto/nota.cadastrar2.dto';
 
 @Controller('nota')
 export class NotaController {

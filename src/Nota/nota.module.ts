@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Aluno } from '../Aluno/aluno.entity';
-import { AlunoController } from '../Aluno/alunoController';
-import { AlunoService } from '../Aluno/aluno.service'; // Importe a entidade Materia
+import { Nota } from './nota.entity';
+import { NotaController } from './notaController';
+import { NotaService } from './nota.service'; // Importe a entidade Materia
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Aluno]), // Registre a entidade Materia
+    TypeOrmModule.forFeature([Nota]), // Registre a entidade Materia
   ],
-  controllers: [AlunoController],
-  providers: [AlunoService],
+  controllers: [NotaController],
+  providers: [NotaService],
 })
 export class NotaModule {}

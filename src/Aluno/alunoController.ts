@@ -32,6 +32,7 @@ export class AlunoController{
   async obterHistoricoAlunoID(@Param('id') id: number) {
     return this.alunoService.obterHistoricoAlunoID(id);
   }
+
   @Get('historicosOrdenados')
   async obterHistoricoTodosAlunosOrdenados() {
     return this.alunoService.obterHistoricoTodosAlunosOrdenados();
