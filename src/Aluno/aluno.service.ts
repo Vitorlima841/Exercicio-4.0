@@ -29,7 +29,6 @@ export class AlunoService {
   async cadastrarAluno(data: AlunoCadastrarDto): Promise<ResultadoDto>{
     let aluno = new Aluno()
     aluno.nome = data.nome
-    aluno.id = data.id
     aluno.grade = data.grade
     return this.alunoRepository.save(aluno)
       .then((result) =>{

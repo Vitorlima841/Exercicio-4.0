@@ -24,7 +24,6 @@ export class Materia_gradeService {
 
     async cadastrarMateria_grade(data: Materia_gradeCadastrarDto): Promise<ResultadoDto>{
         let materia_grade = new Materia_grade()
-        materia_grade.id = data.id
         materia_grade.materia = data.materia
         materia_grade.grade = data.grade
 

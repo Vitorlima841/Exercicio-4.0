@@ -23,7 +23,6 @@ export class MateriaService {
 
     async cadastrarMateria(data: MateriaCadastrarDto): Promise<ResultadoDto>{
         let materia = new Materia()
-        materia.id = data.id
         materia.nome = data.nome
 
         return this.materiaRepository.save(materia)

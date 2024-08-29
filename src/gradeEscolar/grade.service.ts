@@ -8,10 +8,6 @@ import { Materia } from '../materiaEscolar/materia.entity';
 
 @Injectable()
 export class GradeService {
-  // constructor(
-  //   @Inject('GRADE_REPOSITORY')
-  //   private gradeRepository: Repository<Grade>,
-  // ) {}
 
   constructor(
     @InjectRepository(Grade) // Alteração aqui
@@ -25,10 +21,8 @@ export class GradeService {
 
   async cadastrarGrade(data: GradeCadastrarDto): Promise<ResultadoDto>{
     let grade = new Grade()
-    grade.id = data.id
     grade.aluno = data.aluno
     grade.materia_grade = data.materia_grade
-
 
     if(grade.materia_grade.length < 5){
       throw new BadRequestException('A grade deve ter no mínimo 5 matérias.');
@@ -47,6 +41,5 @@ export class GradeService {
           mensagem: "Grade não cadastrada"
         }
       })
-
   }
 }
