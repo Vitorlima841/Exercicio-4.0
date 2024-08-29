@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
-import { DatabaseModule } from '../database/database.module';
-import { alunoProviders } from './aluno.providers';
-import { AlunoService } from './aluno.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Aluno } from './aluno.entity';
 import { AlunoController } from './alunoController';
+import { AlunoService } from './aluno.service';
 
 @Module({
-  imports: [DatabaseModule],
-  controllers: [AlunoController],
-  providers: [
-    ...alunoProviders,
-    AlunoService,
+  imports: [
+    TypeOrmModule.forFeature([Aluno]), // Registre a entidade Materia
   ],
+  controllers: [AlunoController],
+  providers: [AlunoService],
 })
 export class AlunoModule {}

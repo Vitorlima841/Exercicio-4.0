@@ -3,11 +3,18 @@ import { Repository } from 'typeorm';
 import { Grade } from './grade.entity';
 import { GradeCadastrarDto } from './dto/grade.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Materia } from '../materiaEscolar/materia.entity';
 
 @Injectable()
 export class GradeService {
+  // constructor(
+  //   @Inject('GRADE_REPOSITORY')
+  //   private gradeRepository: Repository<Grade>,
+  // ) {}
+
   constructor(
-    @Inject('GRADE_REPOSITORY')
+    @InjectRepository(Grade) // Alteração aqui
     private gradeRepository: Repository<Grade>,
   ) {}
 

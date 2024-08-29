@@ -3,12 +3,18 @@ import { Repository } from 'typeorm';
 import { Materia } from './materia.entity';
 import { MateriaCadastrarDto } from './dto/materia.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class MateriaService {
+    // constructor(
+    //     @Inject('MATERIA_REPOSITORY')
+    //     private materiaRepository: Repository<Materia>,
+    // ) {}
+
     constructor(
-        @Inject('MATERIA_REPOSITORY')
-        private materiaRepository: Repository<Materia>,
+      @InjectRepository(Materia) // Alteração aqui
+      private materiaRepository: Repository<Materia>,
     ) {}
 
     async mostrarMaterias(): Promise<Materia[]> {

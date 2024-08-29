@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
-import { DatabaseModule } from '../database/database.module';
-import { gradeProviders } from './grade.providers';
-import { GradeService } from './grade.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Grade } from './grade.entity';
 import { GradeController } from './gradeController';
+import { GradeService } from './grade.service'; // Importe a entidade Materia
 
 @Module({
-  imports: [DatabaseModule],
-  controllers: [GradeController],
-  providers: [
-    ...gradeProviders,
-    GradeService,
+  imports: [
+    TypeOrmModule.forFeature([Grade]), // Registre a entidade Materia
   ],
+  controllers: [GradeController],
+  providers: [GradeService],
 })
 export class GradeModule {}

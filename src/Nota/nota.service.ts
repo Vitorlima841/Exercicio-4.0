@@ -3,11 +3,18 @@ import { Repository } from 'typeorm';
 import { Nota } from './nota.entity';
 import { NotaCadastrarDto } from './dto/nota.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Materia } from '../materiaEscolar/materia.entity';
 
 @Injectable()
 export class NotaService {
+  // constructor(
+  //   @Inject('NOTA_REPOSITORY')
+  //   private notaRepository: Repository<Nota>,
+  // ) {}
+
   constructor(
-    @Inject('NOTA_REPOSITORY')
+    @InjectRepository(Nota) // Alteração aqui
     private notaRepository: Repository<Nota>,
   ) {}
 

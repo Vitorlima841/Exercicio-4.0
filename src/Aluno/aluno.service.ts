@@ -3,11 +3,18 @@ import { Repository } from 'typeorm';
 import { Aluno } from './aluno.entity';
 import { AlunoCadastrarDto } from './dto/aluno.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Materia } from '../materiaEscolar/materia.entity';
 
 @Injectable()
 export class AlunoService {
+  // constructor(
+  //   @Inject('ALUNO_REPOSITORY')
+  //   private alunoRepository: Repository<Aluno>,
+  // ) {}
+
   constructor(
-    @Inject('ALUNO_REPOSITORY')
+    @InjectRepository(Aluno) // Alteração aqui
     private alunoRepository: Repository<Aluno>,
   ) {}
 

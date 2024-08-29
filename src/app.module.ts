@@ -6,9 +6,11 @@ import { AlunoModule } from './Aluno/aluno.module';
 import { GradeModule } from './gradeEscolar/grade.module';
 import { NotaModule } from './Nota/nota.module';
 import { Materia_gradeModule } from './materias_grade/materia_grade.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
+      DatabaseModule,
       MateriaModule,
       AlunoModule,
       GradeModule,

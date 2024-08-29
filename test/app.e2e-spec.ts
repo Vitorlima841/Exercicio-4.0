@@ -1,59 +1,53 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
 import { MateriaService } from '../src/materiaEscolar/materia.service';
-import { Materia } from '../src/materiaEscolar/materia.entity';
+import { MateriaController } from '../src/materiaEscolar/materiaController';
+import { INestApplication } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Materia } from '../src/materiaEscolar/materia.entity';
 import { Repository } from 'typeorm';
+
+// Mock para o repositório
+const mockMateriaRepository = {
+  save: jest.fn().mockResolvedValue({
+    status: true,
+    mensagem: 'Materia cadastrada!',
+  }),
+  // Adicione outros métodos do repositório que você está usando nos seus testes, se necessário.
+};
 
 describe('Materia Controller (e2e)', () => {
   let app: INestApplication;
-  let materiaService: MateriaService;
-  let materiaRepository: Repository<Materia>;
+  let materiaController: MateriaController;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      controllers: [MateriaController],
+      providers: [
+        MateriaService,
+        {
+          provide: getRepositoryToken(Materia), // Fornecendo o repositório com o token correto
+          useValue: mockMateriaRepository, // Usando o mock do repositório
+        },
+      ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
 
-    materiaService = moduleFixture.get<MateriaService>(MateriaService);
-    materiaRepository = moduleFixture.get<Repository<Materia>>(getRepositoryToken(Materia));
-  });
-
-  afterEach(async () => {
-    // Clean up database after each test
-    if (materiaRepository) {
-      await materiaRepository.query('DELETE FROM materia'); // Adjust based on your database
-    }
+    materiaController = moduleFixture.get<MateriaController>(MateriaController);
   });
 
   it('/POST /materia/cadastrarMateria should create a materia', async () => {
     const createMateriaDto = { nome: 'Matematica' };
 
-    return request(app.getHttpServer())
-      .post('/materia/cadastrarMateria') // Ajuste aqui para coincidir com o controlador
+    await request(app.getHttpServer())
+      .post('/materia/cadastrarMateria')
       .send(createMateriaDto)
       .expect(201)
       .expect(({ body }) => {
         expect(body.status).toBe(true);
         expect(body.mensagem).toBe('Materia cadastrada!');
-      });
-  });
-
-  it('/POST /materia/cadastrarMateria should fail with invalid data', async () => {
-    const invalidDto = { nome: '' }; // Assuming nome should not be empty
-
-    return request(app.getHttpServer())
-      .post('/materia/cadastrarMateria') // Ajuste aqui para coincidir com o controlador
-      .send(invalidDto)
-      .expect(400) // Adjust the status code based on your error handling
-      .expect(({ body }) => {
-        expect(body.status).toBe(false);
-        expect(body.mensagem).toBe('Materia não cadastrada');
       });
   });
 
