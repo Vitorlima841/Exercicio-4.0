@@ -23,24 +23,19 @@ const mockAlunoRepository = {
     status: true,
     mensagem: 'Aluno cadastrado!',
   }),
-
   find: jest.fn().mockResolvedValue([
-    { id: 1, nome: 'João', grade: { materia_grade: { materia: { id: 1, nome: 'Matemática' }, nota: { id: 1, valor: 85, verficaConcluir: false } } } }
+    { id: 1, nome: 'João', grade: { materia_grade: { materia: { id: 1, nome: 'Matemática' }, nota: { id: 1, valor: 85, verficaConcluir: false } } } },
   ]),
-
   findOne: jest.fn().mockResolvedValue([
-    { id: 1, nome: 'João', grade: { materia_grade: { materia: { id: 1, nome: 'Matemática' }, nota: { id: 1, valor: 85, verficaConcluir: false } } } }
+    { id: 1, nome: 'João', grade: { materia_grade: { materia: { id: 1, nome: 'Matemática' }, nota: { id: 1, valor: 85, verficaConcluir: false } } } },
   ]),
-
 };
-
 
 const mockMateriaRepository = {
   save: jest.fn().mockResolvedValue({
     status: true,
     mensagem: 'Materia cadastrada!',
   }),
-
 };
 
 const mockGradeRepository = {
@@ -75,7 +70,13 @@ describe('Application E2E Tests', () => {
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      controllers: [AlunoController, MateriaController, GradeController, NotaController, Materia_gradeController],
+      controllers: [
+        AlunoController,
+        MateriaController,
+        GradeController,
+        NotaController,
+        Materia_gradeController,
+      ],
       providers: [
         AlunoService,
         MateriaService,
@@ -89,13 +90,16 @@ describe('Application E2E Tests', () => {
         {
           provide: getRepositoryToken(Materia),
           useValue: mockMateriaRepository,
-        },{
+        },
+        {
           provide: getRepositoryToken(Grade),
           useValue: mockGradeRepository,
-        },{
+        },
+        {
           provide: getRepositoryToken(Nota),
           useValue: mockNotaRepository,
-        },{
+        },
+        {
           provide: getRepositoryToken(Materia_grade),
           useValue: mockMateriaGradeRepository,
         },
@@ -108,7 +112,7 @@ describe('Application E2E Tests', () => {
 
   describe('Aluno Controller', () => {
     it('/POST /aluno/cadastrarAluno should create an aluno', async () => {
-      const createAlunoDto = { nome: 'João',grade: 1 };
+      const createAlunoDto = { nome: 'João', grade: 1 };
 
       await request(app.getHttpServer())
         .post('/aluno/cadastrarAluno')
@@ -161,7 +165,7 @@ describe('Application E2E Tests', () => {
       const createGradeDto = {
         id: 1,
         aluno: 'vitor',
-        materia_grade: [1, 2, 3, 4, 5]
+        materia_grade: [1, 2, 3, 4, 5],
       };
 
       await request(app.getHttpServer())
@@ -178,8 +182,8 @@ describe('Application E2E Tests', () => {
   describe('Nota Controller', () => {
     it('/POST /Nota/lancarNota should handle nota creation and validation', async () => {
       const createNotaDto = {
-        valor: 85,
-        materia_grade: 1
+        valor: 87,
+        materia_grade: 1,
       };
 
       await request(app.getHttpServer())
@@ -192,48 +196,48 @@ describe('Application E2E Tests', () => {
         });
     });
 
-    // it('/POST /Nota/lancarNota should handle validation and deletion of notas', async () => {
-    //   // Primeiro, cria notas que violam a regra
-    //   const nota1 = { valor: 75, materia_grade: 1 };
-    //   const nota2 = { valor: 82, materia_grade: 1 };
-    //   const nota3 = { valor: 79, materia_grade: 1 };
-    //
-    //   // Cria as notas com valores que devem levar à exclusão
-    //   await request(app.getHttpServer()).post('/Nota/lancarNota').send(nota1).expect(201);
-    //   await request(app.getHttpServer()).post('/Nota/lancarNota').send(nota2).expect(201);
-    //   await request(app.getHttpServer()).post('/Nota/lancarNota').send(nota3).expect(201);
-    //   await request(app.getHttpServer()).post('/Nota/lancarNota').send(nota2).expect(401); // Espera erro devido à exclusão
-    //
-    //   // Verifica se a resposta indica exclusão e erro
-    //   await request(app.getHttpServer())
-    //     .post('/Nota/lancarNota')
-    //     .send({ valor: 90, materia_grade: 1 })
-    //     .expect(400)
-    //     .expect(({ body }) => {
-    //       expect(body.status).toBe(false);
-    //       expect(body.mensagem).toBe('Existem notas menores que 80. Todas as notas foram deletadas e é necessário reiniciar as notas para essa matéria.');
-    //     });
+    it('/POST /Nota/lancarNota should handle validation and deletion of notas', async () => {
+      // Primeiro, cria notas que violam a regra
+      const nota1 = { valor: 75, materia_grade: 1 };
+      const nota2 = { valor: 82, materia_grade: 1 };
+      const nota3 = { valor: 79, materia_grade: 1 };
+
+      // Cria as notas com valores que devem levar à exclusão
+      await request(app.getHttpServer()).post('/Nota/lancarNota').send(nota1).expect(201);
+      await request(app.getHttpServer()).post('/Nota/lancarNota').send(nota2).expect(201);
+      await request(app.getHttpServer()).post('/Nota/lancarNota').send(nota3).expect(201);
+      await request(app.getHttpServer()).post('/Nota/lancarNota').send(nota2).expect(401); // Espera erro devido à exclusão
+
+      // Verifica se a resposta indica exclusão e erro
+      await request(app.getHttpServer())
+        .post('/Nota/lancarNota')
+        .send({ valor: 90, materia_grade: 1 })
+        .expect(400)
+        .expect(({ body }) => {
+          expect(body.status).toBe(false);
+          expect(body.mensagem).toBe('Existem notas menores que 80. Todas as notas foram deletadas e é necessário reiniciar as notas para essa matéria.');
+        });
     });
+  });
 
+  describe('Materia_grade Controller', () => {
+    it('/POST /Materia_grade/cadastrarMateria_grade should create a materia', async () => {
+      const createMateriaGradeDto = {
+        id: 1,
+        grade: { aluno: 'Vitor ' },
+        materia: { nome: 'Matematica' },
+      };
 
-    describe('Materia_grade Controller', () => {
-      it('/POST /Materia_grade/cadastrarMateria_grade should create a materia', async () => {
-        const createMateriaGradeDto = {
-          id: 1,
-          grade: { aluno: 'Vitor ' },
-          materia: { nome: 'Matematica'}
-        };
-
-        await request(app.getHttpServer())
-          .post('/Materia_grade/cadastrarMateria_grade')
-          .send(createMateriaGradeDto)
-          .expect(201)
-          .expect(({ body }) => {
-            expect(body.status).toBe(true);
-            expect(body.mensagem).toBe('Materia_grade cadastrada!');
-          });
-      });
+      await request(app.getHttpServer())
+        .post('/Materia_grade/cadastrarMateria_grade')
+        .send(createMateriaGradeDto)
+        .expect(201)
+        .expect(({ body }) => {
+          expect(body.status).toBe(true);
+          expect(body.mensagem).toBe('Materia_grade cadastrada!');
+        });
     });
+  });
 
   afterAll(async () => {
     await app.close();

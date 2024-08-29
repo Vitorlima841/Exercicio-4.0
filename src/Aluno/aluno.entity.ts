@@ -11,7 +11,7 @@ export class Aluno {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 100 })
+  @Column({ length: 100, nullable: false })
   nome: string;
 
   @OneToMany(() => Grade, (grade) => grade.aluno)

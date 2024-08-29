@@ -30,6 +30,7 @@ export class AlunoService {
     let aluno = new Aluno()
     aluno.nome = data.nome
     aluno.grade = data.grade
+    console.log(aluno.nome)
     return this.alunoRepository.save(aluno)
       .then((result) =>{
         return <ResultadoDto>{

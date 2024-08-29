@@ -2,7 +2,9 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  ManyToOne
+  ManyToOne,
+  BeforeInsert,
+  BeforeUpdate
 } from 'typeorm';
 import { Materia_grade } from '../materias_grade/materia_grade.entity';
 import { BadRequestException } from '@nestjs/common';
@@ -22,4 +24,11 @@ export class Nota {
 
   @ManyToOne(() => Materia_grade, (materia_grade) => materia_grade.nota)
   materia_grade: Materia_grade;
+
+  @BeforeInsert()
+  validate() {
+    if (this.valor < 0 || this.valor > 100) {
+      throw new BadRequestException('O valor deve estar entre 0 e 100.');
+    }
+  }
 }

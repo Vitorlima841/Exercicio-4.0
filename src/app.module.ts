@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import {MateriaModule} from "./materiaEscolar/materia.module";
@@ -7,6 +7,7 @@ import { GradeModule } from './gradeEscolar/grade.module';
 import { NotaModule } from './Nota/nota.module';
 import { Materia_gradeModule } from './materias_grade/materia_grade.module';
 import { DatabaseModule } from './database/database.module';
+import { APP_PIPE } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -18,6 +19,10 @@ import { DatabaseModule } from './database/database.module';
       Materia_gradeModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },],
 })
 export class AppModule {}
