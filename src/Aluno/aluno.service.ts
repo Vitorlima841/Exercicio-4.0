@@ -1,20 +1,15 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Aluno } from './aluno.entity';
 import { AlunoCadastrarDto } from './dto/aluno.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Materia } from '../materiaEscolar/materia.entity';
 
 @Injectable()
 export class AlunoService {
-  // constructor(
-  //   @Inject('ALUNO_REPOSITORY')
-  //   private alunoRepository: Repository<Aluno>,
-  // ) {}
 
   constructor(
-    @InjectRepository(Aluno) // Alteração aqui
+    @InjectRepository(Aluno)
     private alunoRepository: Repository<Aluno>,
   ) {}
 
@@ -30,24 +25,23 @@ export class AlunoService {
     let aluno = new Aluno()
     aluno.nome = data.nome
     aluno.grade = data.grade
-    console.log(aluno.nome)
     return this.alunoRepository.save(aluno)
       .then((result) =>{
         return <ResultadoDto>{
           status: true,
-          mensagem: "Aluno cadastrado"
+          mensagem: "Aluno cadastrado",
+          result: aluno
         }
       })
       .catch((error) =>{
         return <ResultadoDto>{
           status: false,
-          mensagem: "Aluno não cadastrado"
+          mensagem: "Aluno não cadastrado" + error.message
         }
       })
   }
 
   async obterHistoricoTodosAlunosOrdenados(): Promise<any[]> {
-      // Buscando todos os alunos com as relações necessárias
       const alunos = await this.alunoRepository.find({
         relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
       });
@@ -56,23 +50,20 @@ export class AlunoService {
       throw new NotFoundException('Nenhum aluno encontrado');
     }
 
-    // Processando e calculando a média de notas para cada aluno
     const alunosComScores = alunos.map(aluno => {
-      // Coletando todas as notas do aluno
       const notas = aluno.grade.flatMap(grade =>
         grade.materia_grade.flatMap(materia_grade =>
           materia_grade.nota.map(nota => nota.valor)
         )
       );
 
-      // Calculando a média das notas
       const somaNotas = notas.reduce((total, nota) => total + nota, 0);
       const mediaNotas = notas.length > 0 ? somaNotas / notas.length : 0;
 
       return {
         nome: aluno.nome,
         idaluno: aluno.id,
-        media: mediaNotas, // Mantendo como número para ordenação
+        media: mediaNotas,
         grades: aluno.grade.map(grade => ({
           gradeId: grade.id,
           materias: grade.materia_grade.map(materia_grade => ({
@@ -86,13 +77,11 @@ export class AlunoService {
       };
     });
 
-    // Ordenando os alunos pela média, em ordem decrescente
     const alunosOrdenados = alunosComScores.sort((a, b) => b.media - a.media);
 
-    // Formatando a média para exibição com uma casa decimal
     return alunosOrdenados.map(aluno => ({
       ...aluno,
-      media: parseFloat(aluno.media.toFixed(1)), // Formatando a média para 1 casa decimal
+      media: parseFloat(aluno.media.toFixed(1)),
     }));
   }
 
@@ -109,24 +98,5 @@ export class AlunoService {
       where: { id: alunoId },
       relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
     });
-
-    // if (!aluno) {
-    //   throw new NotFoundException('Aluno não encontrado');
-    // }
-
-
-
-    // return aluno.grade.map(grade => ({
-    //   nome: aluno.nome,
-    //   idaluno: aluno.id,
-    //   gradeId: grade.id,
-    //   materia: grade.materia_grade.map(materia_grade => ({
-    //     materia: materia_grade.materia.nome,
-    //     nota: materia_grade.nota.map(nota => ({
-    //       valor: nota.valor,
-    //       verificaConcluir: nota.verificaConcluir,
-    //     }))
-    //   }))
-    // }));
   }
 }

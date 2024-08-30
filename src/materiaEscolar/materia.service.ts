@@ -7,13 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class MateriaService {
-    // constructor(
-    //     @Inject('MATERIA_REPOSITORY')
-    //     private materiaRepository: Repository<Materia>,
-    // ) {}
 
     constructor(
-      @InjectRepository(Materia) // Alteração aqui
+      @InjectRepository(Materia)
       private materiaRepository: Repository<Materia>,
     ) {}
 
@@ -29,13 +25,14 @@ export class MateriaService {
         .then((result) =>{
             return <ResultadoDto>{
                 status: true,
-                mensagem: "Materia cadastrada!"
+                mensagem: "Materia cadastrada!",
+                result: materia
             }
         })
           .catch((error) =>{
               return <ResultadoDto>{
                   status: false,
-                  mensagem: "Materia não cadastrada"
+                  mensagem: "Materia não cadastrada" + error.message
               }
           })
 

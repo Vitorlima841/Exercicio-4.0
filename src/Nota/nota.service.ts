@@ -8,13 +8,9 @@ import { Materia } from '../materiaEscolar/materia.entity';
 
 @Injectable()
 export class NotaService {
-  // constructor(
-  //   @Inject('NOTA_REPOSITORY')
-  //   private notaRepository: Repository<Nota>,
-  // ) {}
 
   constructor(
-    @InjectRepository(Nota) // Alteração aqui
+    @InjectRepository(Nota)
     private notaRepository: Repository<Nota>,
   ) {}
 
@@ -88,6 +84,7 @@ export class NotaService {
         return <ResultadoDto>{
           status: true,
           mensagem: 'Nota cadastrada!',
+          result: nota
         };
       })
       .catch((error) => {

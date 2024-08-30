@@ -4,7 +4,7 @@ import { AlunoService } from '../src/Aluno/aluno.service';
 import { AlunoController } from '../src/Aluno/alunoController';
 import { MateriaService } from '../src/materiaEscolar/materia.service';
 import { MateriaController } from '../src/materiaEscolar/materiaController';
-import { INestApplication } from '@nestjs/common';
+import { BadRequestException, INestApplication } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Aluno } from '../src/Aluno/aluno.entity';
 import { Materia } from '../src/materiaEscolar/materia.entity';
@@ -46,9 +46,11 @@ const mockGradeRepository = {
 };
 
 const mockNotaRepository = {
-  save: jest.fn().mockResolvedValue({
-    status: true,
-    mensagem: 'Nota cadastrada!',
+  save: jest.fn().mockImplementation((nota: Nota) => {
+    if (nota.valor < 0 || nota.valor > 100) {
+      return Promise.reject(new BadRequestException('O valor deve estar entre 0 e 100.'));
+    }
+    return Promise.resolve(nota);
   }),
   createQueryBuilder: jest.fn().mockReturnThis(),
   where: jest.fn().mockReturnThis(),
@@ -57,6 +59,7 @@ const mockNotaRepository = {
   from: jest.fn().mockReturnThis(),
   execute: jest.fn().mockResolvedValue({}),
 };
+
 
 const mockMateriaGradeRepository = {
   save: jest.fn().mockResolvedValue({
@@ -165,7 +168,7 @@ describe('Application E2E Tests', () => {
       const createGradeDto = {
         id: 1,
         aluno: 'vitor',
-        materia_grade: [1, 2, 3, 4, 5],
+        materias: [1, 2, 3, 4, 5],
       };
 
       await request(app.getHttpServer())
@@ -182,12 +185,12 @@ describe('Application E2E Tests', () => {
   describe('Nota Controller', () => {
     it('/POST /Nota/lancarNota should handle nota creation and validation', async () => {
       const createNotaDto = {
-        valor: 87,
+        valor: 23,
         materia_grade: 1,
       };
 
       await request(app.getHttpServer())
-        .post('/Nota/lancarNota')
+        .post('/nota/lancarNota')
         .send(createNotaDto)
         .expect(201)
         .expect(({ body }) => {
@@ -197,27 +200,24 @@ describe('Application E2E Tests', () => {
     });
 
     it('/POST /Nota/lancarNota should handle validation and deletion of notas', async () => {
-      // Primeiro, cria notas que violam a regra
-      const nota1 = { valor: 75, materia_grade: 1 };
+      const nota1 = { valor: 89, materia_grade: 1 };
       const nota2 = { valor: 82, materia_grade: 1 };
-      const nota3 = { valor: 79, materia_grade: 1 };
+      const nota3 = { valor: 86, materia_grade: 1 };
 
-      // Cria as notas com valores que devem levar à exclusão
       await request(app.getHttpServer()).post('/Nota/lancarNota').send(nota1).expect(201);
       await request(app.getHttpServer()).post('/Nota/lancarNota').send(nota2).expect(201);
-      await request(app.getHttpServer()).post('/Nota/lancarNota').send(nota3).expect(201);
-      await request(app.getHttpServer()).post('/Nota/lancarNota').send(nota2).expect(401); // Espera erro devido à exclusão
+      await request(app.getHttpServer()).post('/Nota/lancarNota').send(nota3).expect(400);
 
-      // Verifica se a resposta indica exclusão e erro
       await request(app.getHttpServer())
         .post('/Nota/lancarNota')
         .send({ valor: 90, materia_grade: 1 })
         .expect(400)
         .expect(({ body }) => {
           expect(body.status).toBe(false);
-          expect(body.mensagem).toBe('Existem notas menores que 80. Todas as notas foram deletadas e é necessário reiniciar as notas para essa matéria.');
+          expect(body.mensagem).toBe('O aluno concluiu a matéria com 3 notas acima de 80.');
         });
     });
+
   });
 
   describe('Materia_grade Controller', () => {

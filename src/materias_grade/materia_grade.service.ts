@@ -8,13 +8,9 @@ import { Materia } from '../materiaEscolar/materia.entity';
 
 @Injectable()
 export class Materia_gradeService {
-    // constructor(
-    //   @Inject('MATERIAGRADE_REPOSITORY')
-    //   private materia_gradeRepository: Repository<Materia_grade>,
-    // ) {}
 
   constructor(
-    @InjectRepository(Materia_grade) // Alteração aqui
+    @InjectRepository(Materia_grade)
     private materia_gradeRepository: Repository<Materia_grade>,
   ) {}
 
