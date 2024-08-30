@@ -34,7 +34,6 @@ export class NotaService {
     nota.materia_grade = data.materia_grade;
     nota.verificaConcluir = false;
 
-    // Pega todas as notas da materia_grade
     const todasNotas = await this.notaRepository
       .createQueryBuilder('nota')
       .where('nota.materia_grade = :materiaGradeId', {
@@ -42,11 +41,9 @@ export class NotaService {
       })
       .getMany();
 
-    // Verifica se há pelo menos 2 notas já cadastradas
     if (todasNotas.length >= 2) {
       let hasNotaMenorQue80 = false;
 
-      // Verifica se alguma das notas anteriores ou a atual é menor que 80
       for (const notaExistente of todasNotas) {
         if (notaExistente.valor < 80 || nota.valor < 80 && todasNotas. length < 3) {
           hasNotaMenorQue80 = true;
@@ -55,7 +52,6 @@ export class NotaService {
       }
 
       if (hasNotaMenorQue80) {
-        // Deleta todas as notas para essa materia_grade
         await this.notaRepository
           .createQueryBuilder()
           .delete()
@@ -70,14 +66,12 @@ export class NotaService {
         );
       }
 
-      // Se não houver notas menores que 80, a matéria é concluída
       nota.verificaConcluir = true;
       if (todasNotas.length !== 2) {
-        throw new BadRequestException('O aluno concluiu a matéria com 3 notas acima de 80.',);
+        throw new BadRequestException('O aluno concluiu a matéria com 3 notas acima de 80.');
       }
     }
 
-    // Salvar a nova nota
     return this.notaRepository
       .save(nota)
       .then(() => {
