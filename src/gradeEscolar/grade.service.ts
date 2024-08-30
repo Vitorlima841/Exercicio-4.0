@@ -36,9 +36,27 @@ export class GradeService {
     grade.aluno = data.aluno;
 
     for (let i = 0; i < materias.length; i++) {
+      const materia = materias[i];
+
+      // Verificar se o aluno já fez essa matéria em alguma grade
+      const materiaExistente = await this.materia_gradeRepository
+        .createQueryBuilder('mg')
+        .leftJoinAndSelect('mg.grade', 'grade')
+        .where('mg.materiaId = :materiaId', { materiaId: materia.id })
+        .andWhere('grade.alunoId = :alunoId', { alunoId: data.aluno.id })
+        .getOne();
+
+      console.log(materiaExistente)
+
+      if (materiaExistente) {
+        // Se a matéria já foi feita, pule para a próxima
+        throw new BadRequestException(`A materia ${i} ja foi concluida pelo aluno`);
+      }
+
+      // Criar a nova Materia_grade caso o aluno não tenha feito essa matéria
       let mg = new Materia_grade();
       mg.grade = grade;
-      mg.materia = materias[i];
+      mg.materia = materia;
       materia_grade.push(mg);
     }
 
@@ -54,9 +72,10 @@ export class GradeService {
     } catch (error) {
       return <ResultadoDto>{
         status: false,
-        mensagem: "Grade não cadastrada" + error.message
+        mensagem: "Grade não cadastrada: " + error.message
       };
     }
   }
+
 
 }

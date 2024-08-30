@@ -1,5 +1,6 @@
 import { IsInt, Min, Max, IsBoolean } from 'class-validator';
 import { Materia_grade } from '../../materias_grade/materia_grade.entity';
+import { Materia } from '../../materiaEscolar/materia.entity';
 
 export class NotaCadastrarDto {
   @IsInt({ message: 'O valor deve ser um número inteiro.' })
@@ -7,7 +8,7 @@ export class NotaCadastrarDto {
   @Max(100, { message: 'O valor deve ser menor ou igual a 100.' })
   valor: number;
 
-
-  materia_grade: Materia_grade;
+  materia: Materia;
+  materia_grade?: Materia_grade;
 
 }
