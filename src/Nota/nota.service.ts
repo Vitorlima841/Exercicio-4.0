@@ -6,6 +6,8 @@ import { ResultadoDto } from '../dto/resultado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Materia } from '../materiaEscolar/materia.entity';
 import { Materia_grade } from '../materias_grade/materia_grade.entity';
+import { Aluno } from '../Aluno/aluno.entity';
+import { Grade } from '../gradeEscolar/grade.entity';
 
 @Injectable()
 export class NotaService {
@@ -16,6 +18,12 @@ export class NotaService {
 
     @InjectRepository(Materia_grade)
     private materia_gradeRepository: Repository<Materia_grade>,
+
+    @InjectRepository(Aluno)
+    private alunoRepository: Repository<Aluno>,
+
+    @InjectRepository(Grade)
+    private gradeRepository: Repository<Grade>,
   ) {}
 
   async mostrarNotas(): Promise<Nota[]> {
@@ -33,10 +41,23 @@ export class NotaService {
   }
 
   async lancarNota(data: NotaCadastrarDto): Promise<ResultadoDto> {
-    // Busca todas as MateriaGrade associadas à materia passada no parâmetro
+    // Busca o aluno com o alunoId passado no parâmetro
+    const aluno = await this.alunoRepository
+      .createQueryBuilder('aluno')
+      .where('aluno.id = :alunoId', { alunoId: data.aluno })
+      .getOne();
+
+    // Busca todas as grades do alunoId passado no parâmetro
+    const grades = await this.gradeRepository
+      .createQueryBuilder('grade')
+      .where('grade.alunoId = :alunoId', { alunoId: aluno.id })
+      .getOne();
+
+    // Busca todas as MateriaGrade da materia passada no parâmetro
     const materiaGrades = await this.materia_gradeRepository
       .createQueryBuilder('materia_grade')
       .where('materia_grade.materia = :materiaId', { materiaId: data.materia })
+      .andWhere('materia_grade.grade = :gradeId', {gradeId: grades.id })
       .getMany();
 
     // Verifica se existe alguma MateriaGrade associada à materia

@@ -81,7 +81,7 @@ export class AlunoService {
 
     return alunosOrdenados.map(aluno => ({
       ...aluno,
-      media: parseFloat(aluno.media.toFixed(1)),
+      media: parseFloat(aluno.media.toFixed()),
     }));
   }
 

@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Materia } from '../materiaEscolar/materia.entity';
 import { materia_gradeProviders } from '../materias_grade/materia_grade.providers';
 import { Materia_grade } from '../materias_grade/materia_grade.entity';
+import { Aluno } from '../Aluno/aluno.entity';
 
 @Injectable()
 export class GradeService {
@@ -17,6 +18,9 @@ export class GradeService {
 
     @InjectRepository(Materia_grade)
     private materia_gradeRepository: Repository<Materia_grade>,
+
+    @InjectRepository(Aluno)
+    private alunoRepository: Repository<Aluno>,
   ) {}
 
 
@@ -33,27 +37,42 @@ export class GradeService {
       throw new BadRequestException('A grade deve ter no mínimo 5 matérias.');
     }
 
+    // Busca o aluno com o alunoId passado no parâmetro
+    const aluno = await this.alunoRepository
+      .createQueryBuilder('aluno')
+      .where('aluno.id = :alunoId', { alunoId: data.aluno })
+      .getOne();
+
+    // Busca todas as grades do alunoId passado no parâmetro
+    const gradesExistentes = await this.gradeRepository
+      .createQueryBuilder('grade')
+      .where('grade.alunoId = :alunoId', { alunoId: aluno.id })
+      .getMany();
+
+    for (const grade1 of gradesExistentes) {
+      // Busca todas as materia_grades de todas as grades do alunoId passado no parâmetro
+      const materia_gradesExistentes = await this.materia_gradeRepository
+        .createQueryBuilder('materia_grade')
+        .leftJoinAndSelect('materia_grade.materia', 'materia')
+        .leftJoinAndSelect('materia_grade.grade', 'grade')
+        .andWhere('materia_grade.grade = :gradeId', {gradeId: grade1.id })
+        .getMany();
+
+      for (const materia_grade1 of materia_gradesExistentes) {
+        for (const materia2 of materias) {
+          if(materia_grade1.materia.id === Number(materia2)){
+            throw new BadRequestException(`A matéria ${materia_grade1.materia.nome} já está cadastrada para o aluno.`);
+          }
+        }
+      }
+    }
+
     grade.aluno = data.aluno;
 
     for (let i = 0; i < materias.length; i++) {
       const materia = materias[i];
 
-      // Verificar se o aluno já fez essa matéria em alguma grade
-      const materiaExistente = await this.materia_gradeRepository
-        .createQueryBuilder('mg')
-        .leftJoinAndSelect('mg.grade', 'grade')
-        .where('mg.materiaId = :materiaId', { materiaId: materia.id })
-        .andWhere('grade.alunoId = :alunoId', { alunoId: data.aluno.id })
-        .getOne();
-
-      console.log(materiaExistente)
-
-      if (materiaExistente) {
-        // Se a matéria já foi feita, pule para a próxima
-        throw new BadRequestException(`A materia ${i} ja foi concluida pelo aluno`);
-      }
-
-      // Criar a nova Materia_grade caso o aluno não tenha feito essa matéria
+      // Criar a nova Materia_grade
       let mg = new Materia_grade();
       mg.grade = grade;
       mg.materia = materia;
@@ -76,6 +95,4 @@ export class GradeService {
       };
     }
   }
-
-
 }
