@@ -9,13 +9,15 @@ import { Materia_grade } from '../materias_grade/materia_grade.entity';
 import { AlunoService } from '../Aluno/aluno.service';
 import { Aluno } from '../Aluno/aluno.entity';
 import { GradeService } from '../gradeEscolar/grade.service';
-import { Grade } from '../gradeEscolar/grade.entity'; // Importe a entidade Materia
+import { Grade } from '../gradeEscolar/grade.entity';
+import { MateriaService } from '../materiaEscolar/materia.service';
+import { Materia } from '../materiaEscolar/materia.entity'; // Importe a entidade Materia
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Nota, Materia_grade, Aluno,Grade]), // Registre a entidade Materia
+    TypeOrmModule.forFeature([Nota, Materia_grade, Aluno,Grade, Materia]), // Registre a entidade Materia
   ],
   controllers: [NotaController, Materia_gradeController],
-  providers: [NotaService, Materia_gradeService, AlunoService,GradeService],
+  providers: [NotaService, Materia_gradeService, AlunoService,GradeService, MateriaService],
 })
 export class NotaModule {}

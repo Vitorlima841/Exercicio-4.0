@@ -13,7 +13,7 @@ export class MateriaController{
     return this.materiaService.mostrarMaterias()
   }
 
-  @Post('cadastrarMateria')
+  @Post('')
   async cadastrarMateria(@Body()data: MateriaCadastrarDto): Promise<ResultadoDto>{
     return this.materiaService.cadastrarMateria(data)
   }

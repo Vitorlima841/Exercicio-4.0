@@ -13,12 +13,12 @@ export class AlunoController{
     return this.alunoService.mostrarAlunos()
   }
 
-  @Get('mostrarAlunoID/:id')
+  @Get('mostrarAluno/:id')
   async mostrarAlunoID(@Param('id') id: number): Promise<Aluno>{
     return this.alunoService.mostrarAlunosID(id)
   }
 
-  @Post('cadastrarAluno')
+  @Post('')
   async cadastrarAluno(@Body()data: AlunoCadastrarDto): Promise<ResultadoDto>{
     return this.alunoService.cadastrarAluno(data)
   }

@@ -18,7 +18,7 @@ export class NotaController {
     return this.notaService.mostrarNotasDoAluno(data);
   }
 
-  @Post('lancarNota')
+  @Post('')
   async lancarNota(@Body() data: NotaCadastrarDto): Promise<ResultadoDto> {
     return this.notaService.lancarNota(data);
   }

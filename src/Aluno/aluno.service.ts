@@ -53,7 +53,7 @@ export class AlunoService {
     const alunosComScores = alunos.map(aluno => {
       const notas = aluno.grade.flatMap(grade =>
         grade.materia_grade.flatMap(materia_grade =>
-          materia_grade.nota.map(nota => nota.valor)
+          materia_grade.nota.flatMap(nota => nota.valor)
         )
       );
 
@@ -81,7 +81,7 @@ export class AlunoService {
 
     return alunosOrdenados.map(aluno => ({
       ...aluno,
-      media: parseFloat(aluno.media.toFixed()),
+      media: parseFloat(aluno.media.toFixed(1)),
     }));
   }
 

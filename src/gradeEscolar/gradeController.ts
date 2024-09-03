@@ -17,7 +17,7 @@ export class GradeController{
     return this.gradeService.mostrarGrades()
   }
 
-  @Post('cadastrarGrade')
+  @Post('')
   async cadastrarGrades(@Body()data: GradeCadastrarDto): Promise<ResultadoDto>{
     return this.gradeService.cadastrarGrade(data)
   }

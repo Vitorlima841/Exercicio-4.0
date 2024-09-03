@@ -41,34 +41,34 @@ export class NotaService {
   }
 
   async lancarNota(data: NotaCadastrarDto): Promise<ResultadoDto> {
-    // Busca o aluno com o alunoId passado no parâmetro
-    const aluno = await this.alunoRepository
-      .createQueryBuilder('aluno')
-      .where('aluno.id = :alunoId', { alunoId: data.aluno })
-      .getOne();
+    const aluno = await this.alunoRepository.findOne({
+      where: { id: data.aluno.id },
+    });
 
-    // Busca todas as grades do alunoId passado no parâmetro
-    const grades = await this.gradeRepository
-      .createQueryBuilder('grade')
-      .where('grade.alunoId = :alunoId', { alunoId: aluno.id })
-      .getOne();
+    if(!aluno){
+      throw new BadRequestException("Aluno não encontrado");
+    }
 
-    // Busca todas as MateriaGrade da materia passada no parâmetro
+    const grade = await this.gradeRepository.find({
+      where: { aluno: aluno },
+    });
+
+    if(!grade){
+      throw new BadRequestException("Grade não encontrada");
+    }
+
     const materiaGrades = await this.materia_gradeRepository
       .createQueryBuilder('materia_grade')
       .where('materia_grade.materia = :materiaId', { materiaId: data.materia })
-      .andWhere('materia_grade.grade = :gradeId', {gradeId: grades.id })
+      .andWhere('materia_grade.grade IN (:...gradeIds)', { gradeIds: grade.map(g => g.id) })
       .getMany();
 
-    // Verifica se existe alguma MateriaGrade associada à materia
     if (materiaGrades.length === 0) {
       throw new BadRequestException('Nenhuma MateriaGrade associada a essa matéria.');
     }
 
-    // Verifica se já existe alguma nota para as materia_grades encontradas
     const materiaGradeIds = materiaGrades.map((mg) => mg.id);
 
-    // Verifica se a matéria foi concluída com 3 notas acima de 80
     const materiaConcluida = await this.notaRepository
       .createQueryBuilder('nota')
       .where('nota.materia_grade IN (:...materiaGradeIds)', {
@@ -85,10 +85,9 @@ export class NotaService {
       );
     }
 
-    // Cria e salva a nova nota
     const nota = new Nota();
     nota.valor = data.valor;
-    nota.materia_grade = materiaGrades[0]; // Associa a primeira MateriaGrade encontrada
+    nota.materia_grade = materiaGrades[0];
     nota.verificaConcluir = false;
 
     const todasNotas = await this.notaRepository
