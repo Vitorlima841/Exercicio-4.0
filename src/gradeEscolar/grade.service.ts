@@ -45,8 +45,12 @@ export class GradeService {
       }
     });
 
+    // for(const materia of materiaIds){
+    //   console.log(materiaIds)
+    // }
+
     const aluno = await this.alunoRepository.findOne({
-      where: {id: data.aluno.id}
+      where: {id: Number(data.aluno)}
     })
 
     const gradesExistentes = await this.gradeRepository.find({

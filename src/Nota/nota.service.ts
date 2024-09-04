@@ -1,10 +1,9 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { Injectable,BadRequestException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Nota } from './nota.entity';
 import { NotaCadastrarDto } from './dto/nota.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Materia } from '../materiaEscolar/materia.entity';
 import { Materia_grade } from '../materias_grade/materia_grade.entity';
 import { Aluno } from '../Aluno/aluno.entity';
 import { Grade } from '../gradeEscolar/grade.entity';
@@ -26,24 +25,12 @@ export class NotaService {
     private gradeRepository: Repository<Grade>,
   ) {}
 
-  async mostrarNotas(): Promise<Nota[]> {
-    return this.notaRepository.find();
-  }
-
-  async mostrarNotasDoAluno(idAluno: number): Promise<Nota[]> {
-    return this.notaRepository
-      .createQueryBuilder('nota')
-      .innerJoinAndSelect('nota.materia', 'materia')
-      .innerJoinAndSelect('nota.grade', 'grade')
-      .innerJoinAndSelect('grade.aluno', 'aluno')
-      .where('aluno.idteste = :alunoId', { alunoId: idAluno })
-      .getMany();
-  }
-
   async lancarNota(data: NotaCadastrarDto): Promise<ResultadoDto> {
     const aluno = await this.alunoRepository.findOne({
-      where: { id: data.aluno.id },
+      where: { id: Number(data.aluno) },
     });
+
+    console.log(aluno)
 
     if(!aluno){
       throw new BadRequestException("Aluno não encontrado");
@@ -64,7 +51,7 @@ export class NotaService {
       .getMany();
 
     if (materiaGrades.length === 0) {
-      throw new BadRequestException('Nenhuma MateriaGrade associada a essa matéria.');
+      throw new BadRequestException(`O aluno ${aluno.id} não possui a materia ${data.materia}.`);
     }
 
     const materiaGradeIds = materiaGrades.map((mg) => mg.id);

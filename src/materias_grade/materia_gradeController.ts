@@ -8,12 +8,12 @@ import { Materia_gradeCadastrarDto } from './dto/materia_grade.cadastrar.dto';
 export class Materia_gradeController{
   constructor(private readonly materia_gradeService: Materia_gradeService) {}
 
-  @Get('mostrarMaterias_grade')
+  @Get('')
   async mostrarMaterias_grade(): Promise<Materia_grade[]>{
     return this.materia_gradeService.mostrarMaterias_grade()
   }
 
-  @Post('cadastrarMateria_grade')
+  @Post('')
   async cadastrarMateria_grade(@Body()data: Materia_gradeCadastrarDto): Promise<ResultadoDto>{
     return this.materia_gradeService.cadastrarMateria_grade(data)
   }

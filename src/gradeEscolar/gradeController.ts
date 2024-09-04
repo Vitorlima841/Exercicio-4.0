@@ -12,7 +12,7 @@ export class GradeController{
     private readonly gradeService: GradeService
   ) {}
 
-  @Get('mostrarGrades')
+  @Get('')
   async mostrarGrades(): Promise<Grade[]>{
     return this.gradeService.mostrarGrades()
   }

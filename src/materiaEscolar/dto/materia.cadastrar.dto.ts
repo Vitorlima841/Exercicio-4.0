@@ -1,6 +1,8 @@
-import { Nota } from '../../Nota/nota.entity';
+import { IsString } from 'class-validator';
 
-export interface MateriaCadastrarDto{
+export class MateriaCadastrarDto{
   id?: number;
+
+  @IsString({ message: 'O nome deve ser uma string.' })
   nome: string;
 }
