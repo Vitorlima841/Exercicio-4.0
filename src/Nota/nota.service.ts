@@ -30,8 +30,6 @@ export class NotaService {
       where: { id: Number(data.aluno) },
     });
 
-    console.log(aluno)
-
     if(!aluno){
       throw new BadRequestException("Aluno não encontrado");
     }
@@ -58,9 +56,7 @@ export class NotaService {
 
     const materiaConcluida = await this.notaRepository
       .createQueryBuilder('nota')
-      .where('nota.materia_grade IN (:...materiaGradeIds)', {
-        materiaGradeIds,
-      })
+      .where('nota.materia_grade IN (:...materiaGradeIds)', { materiaGradeIds })
       .andWhere('nota.verificaConcluir = :verificaConcluir', {
         verificaConcluir: true,
       })

@@ -45,13 +45,17 @@ export class GradeService {
       }
     });
 
-    // for(const materia of materiaIds){
-    //   console.log(materiaIds)
-    // }
+    if (materiaIds.length !== data.materias.length) {
+      throw new BadRequestException('Algumas matérias fornecidas não são válidas.');
+    }
 
     const aluno = await this.alunoRepository.findOne({
       where: {id: Number(data.aluno)}
     })
+
+    if(!aluno){
+      throw new BadRequestException(`Aluno não encontrado`);
+    }
 
     const gradesExistentes = await this.gradeRepository.find({
       where: { aluno: aluno },
@@ -69,11 +73,11 @@ export class GradeService {
         throw new BadRequestException(`${countMaterias} matérias já estão cadastradas para o aluno.`);
       }
     }
+
     grade.aluno = data.aluno;
 
     for (let i = 0; i < materias.length; i++) {
       const materia = materias[i];
-
       let mg = new Materia_grade();
       mg.grade = grade;
       mg.materia = materia;
@@ -87,7 +91,7 @@ export class GradeService {
       return <ResultadoDto>{
         status: true,
         mensagem: "Grade cadastrada!",
-        result: materia_grade
+        // result: materia_grade
       };
     } catch (error) {
       return <ResultadoDto>{

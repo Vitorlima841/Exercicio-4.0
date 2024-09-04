@@ -8,9 +8,14 @@ import { ResultadoDto } from '../dto/resultado.dto';
 export class AlunoController{
   constructor(private readonly alunoService: AlunoService) {}
 
-  @Post('')
+  @Post()
   async cadastrarAluno(@Body()data: AlunoCadastrarDto): Promise<ResultadoDto>{
     return this.alunoService.cadastrarAluno(data)
+  }
+
+  @Get('ordenados')
+  async obterHistoricoTodosAlunosOrdenados() {
+    return this.alunoService.obterHistoricoTodosAlunosOrdenados();
   }
 
   @Get('')
@@ -18,14 +23,10 @@ export class AlunoController{
     return this.alunoService.obterHistoricoTodosAlunos();
   }
 
-  @Get(':id')
+  @Get('/:id')
   async obterHistoricoAlunoID(@Param('id') id: number) {
     return this.alunoService.obterHistoricoAlunoID(id);
   }
 
-  @Get('historicosOrdenados')
-  async obterHistoricoTodosAlunosOrdenados() {
-    return this.alunoService.obterHistoricoTodosAlunosOrdenados();
-  }
 
 }

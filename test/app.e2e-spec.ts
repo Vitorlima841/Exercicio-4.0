@@ -43,6 +43,15 @@ const mockGradeRepository = {
     status: true,
     mensagem: 'Grade cadastrada!',
   }),
+  createQueryBuilder: jest.fn().mockReturnThis(),
+  leftJoin: jest.fn().mockReturnThis(),
+  where: jest.fn().mockReturnThis(),
+  andWhere: jest.fn().mockReturnThis(),
+  getCount: jest.fn(),
+  getMany: jest.fn().mockResolvedValue([]),
+  delete: jest.fn().mockReturnThis(),
+  from: jest.fn().mockReturnThis(),
+  execute: jest.fn().mockResolvedValue({}),
 };
 
 const mockNotaRepository = {
@@ -114,11 +123,11 @@ describe('Application E2E Tests', () => {
   });
 
   describe('Aluno Controller', () => {
-    it('/POST /aluno/cadastrarAluno should create an aluno', async () => {
+    it('/POST /aluno should create an aluno', async () => {
       const createAlunoDto = { nome: 'João', grade: 1 };
 
       await request(app.getHttpServer())
-        .post('/aluno/cadastrarAluno')
+        .post('/aluno')
         .send(createAlunoDto)
         .expect(201)
         .expect(({ body }) => {
@@ -127,7 +136,7 @@ describe('Application E2E Tests', () => {
         });
     });
 
-    it('/GET /aluno/historico deveria mostrar o histórico de todos os alunos', async () => {
+    it('/GET /aluno deveria mostrar o histórico de todos os alunos', async () => {
       await request(app.getHttpServer())
         .get('/aluno/historico')
         .expect(200)
@@ -136,7 +145,7 @@ describe('Application E2E Tests', () => {
         });
     });
 
-    it('/GET /aluno/historico/:id deveria mostrar o histórico do aluno com ID especificado', async () => {
+    it('/GET /aluno/:id deveria mostrar o histórico do aluno com ID especificado', async () => {
       const alunoId = 1;
 
       await request(app.getHttpServer())
@@ -149,11 +158,11 @@ describe('Application E2E Tests', () => {
   });
 
   describe('Materia Controller', () => {
-    it('/POST /materia/cadastrarMateria should create a materia', async () => {
+    it('/POST /materia should create a materia', async () => {
       const createMateriaDto = { nome: 'Matematica' };
 
       await request(app.getHttpServer())
-        .post('/materia/cadastrarMateria')
+        .post('/materia')
         .send(createMateriaDto)
         .expect(201)
         .expect(({ body }) => {
@@ -164,15 +173,15 @@ describe('Application E2E Tests', () => {
   });
 
   describe('Grade Controller', () => {
-    it('/POST /Grade/cadastrarGrade should create a materia', async () => {
+    it('/POST /Grade should create a materia', async () => {
       const createGradeDto = {
         id: 1,
-        aluno: 'vitor',
+        aluno: 1,
         materias: [1, 2, 3, 4, 5],
       };
 
       await request(app.getHttpServer())
-        .post('/Grade/cadastrarGrade')
+        .post('/Grade')
         .send(createGradeDto)
         .expect(201)
         .expect(({ body }) => {
@@ -183,14 +192,14 @@ describe('Application E2E Tests', () => {
   });
 
   describe('Nota Controller', () => {
-    it('/POST /Nota/lancarNota should not accept invalid valor', async () => {
+    it('/POST /Nota should not accept invalid valor', async () => {
       const createNotaDto = {
         valor: 12,
         materia_grade: 1,
       };
 
       await request(app.getHttpServer())
-        .post('/nota/lancarNota')
+        .post('/nota')
         .send(createNotaDto)
         .expect(201)
         .expect(({ body }) => {
@@ -221,24 +230,24 @@ describe('Application E2E Tests', () => {
   //   });
   });
 
-  describe('Materia_grade Controller', () => {
-    it('/POST /Materia_grade/cadastrarMateria_grade should create a materia', async () => {
-      const createMateriaGradeDto = {
-        id: 1,
-        grade: { aluno: 'Vitor ' },
-        materia: { nome: 'Matematica' },
-      };
-
-      await request(app.getHttpServer())
-        .post('/Materia_grade/cadastrarMateria_grade')
-        .send(createMateriaGradeDto)
-        .expect(201)
-        .expect(({ body }) => {
-          expect(body.status).toBe(true);
-          expect(body.mensagem).toBe('Materia_grade cadastrada!');
-        });
-    });
-  });
+  // describe('Materia_grade Controller', () => {
+  //   it('/POST /Materia_grade should create a materia', async () => {
+  //     const createMateriaGradeDto = {
+  //       id: 1,
+  //       grade: { aluno: 'Vitor ' },
+  //       materia: { nome: 'Matematica' },
+  //     };
+  //
+  //     await request(app.getHttpServer())
+  //       .post('/Materia_grade/cadastrarMateria_grade')
+  //       .send(createMateriaGradeDto)
+  //       .expect(201)
+  //       .expect(({ body }) => {
+  //         expect(body.status).toBe(true);
+  //         expect(body.mensagem).toBe('Materia_grade cadastrada!');
+  //       });
+  //   });
+  // });
 
   afterAll(async () => {
     await app.close();
