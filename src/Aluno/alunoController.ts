@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AlunoService } from './aluno.service';
-import { Aluno } from './aluno.entity';
 import { AlunoCadastrarDto } from './dto/aluno.cadastrar.dto';
 import { ResultadoDto } from '../dto/resultado.dto';
 
@@ -14,19 +13,17 @@ export class AlunoController{
   }
 
   @Get('ordenados')
-  async obterHistoricoTodosAlunosOrdenados() {
-    return this.alunoService.obterHistoricoTodosAlunosOrdenados();
+  async AlunosOrdenados() {
+    return this.alunoService.AlunosOrdenados();
   }
 
   @Get('')
-  async obterHistoricoTodosAlunos() {
-    return this.alunoService.obterHistoricoTodosAlunos();
+  async Historicos() {
+    return this.alunoService.Historicos();
   }
 
   @Get('/:id')
-  async obterHistoricoAlunoID(@Param('id') id: number) {
-    return this.alunoService.obterHistoricoAlunoID(id);
+  async HistoricoId(@Param('id') id: number) {
+    return this.alunoService.HistoricoId(id);
   }
-
-
 }

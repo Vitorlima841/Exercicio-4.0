@@ -33,7 +33,7 @@ export class AlunoService {
       })
   }
 
-  async obterHistoricoTodosAlunosOrdenados(): Promise<any[]> {
+  async AlunosOrdenados(): Promise<any[]> {
     const alunos = await this.alunoRepository.find({
       relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
     });
@@ -77,7 +77,7 @@ export class AlunoService {
     }));
   }
 
-  async obterHistoricoTodosAlunos(): Promise<Aluno[]> {
+  async Historicos(): Promise<Aluno[]> {
     const aluno = await this.alunoRepository.find({
       relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
     });
@@ -89,7 +89,7 @@ export class AlunoService {
     return aluno;
   }
 
-  async obterHistoricoAlunoID(alunoId: number): Promise<any> {
+  async HistoricoId(alunoId: number): Promise<any> {
     const aluno = await this.alunoRepository.findOne({
       where: { id: alunoId },
       relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],

@@ -12,7 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'; // Importar o TypeOrmModule
             database: 'escola',
             entities: [__dirname + '/../**/*.entity{.ts,.js}'],
             synchronize: true,
-            // dropSchema: true,
+            dropSchema: true,
         }),
     ],
     exports: [TypeOrmModule],

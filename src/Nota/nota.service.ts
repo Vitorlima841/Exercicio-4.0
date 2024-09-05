@@ -82,7 +82,7 @@ export class NotaService {
       let hasNotaMenorQue80 = false;
 
       for (const notaExistente of todasNotas) {
-        if (notaExistente.valor < 80 || (nota.valor < 80 && todasNotas.length < 3)) {
+        if (notaExistente.valor < 80 || nota.valor < 80) {
           hasNotaMenorQue80 = true;
           break;
         }

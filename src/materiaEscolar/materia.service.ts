@@ -35,6 +35,5 @@ export class MateriaService {
                   mensagem: "Materia não cadastrada" + error.message
               }
           })
-
     }
 }

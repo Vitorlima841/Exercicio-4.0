@@ -54,18 +54,18 @@ export class GradeService {
     })
 
     if(!aluno){
-      throw new NotFoundException('Nenhum aluno encontrado.');
+      throw new NotFoundException('Aluno não encontrado.');
     }
 
-    const gradesExistentes = await this.gradeRepository.find({
+    const gradesAluno = await this.gradeRepository.find({
       where: { aluno: aluno },
     });
 
-    if(gradesExistentes.length > 0){
+    if(gradesAluno.length > 0){
       const countMaterias = await this.materia_gradeRepository
         .createQueryBuilder('materia_grade')
         .leftJoin('materia_grade.materia', 'materia')
-        .where('materia_grade.grade IN (:...gradeIds)', { gradeIds: gradesExistentes.map(g => g.id) })
+        .where('materia_grade.grade IN (:...gradeIds)', { gradeIds: gradesAluno.map(g => g.id) })
         .andWhere('materia_grade.materia IN (:...materiaIds)', { materiaIds: materiaIds.map(m => m.id) })
         .getCount();
 
