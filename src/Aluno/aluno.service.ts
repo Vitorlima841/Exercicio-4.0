@@ -28,17 +28,17 @@ export class AlunoService {
       .catch((error) =>{
         return <ResultadoDto>{
           status: false,
-          mensagem: "Aluno não cadastrado" + error.message
+          mensagem: "Aluno não cadastrado: " + error.message
         }
       })
   }
 
   async obterHistoricoTodosAlunosOrdenados(): Promise<any[]> {
-      const alunos = await this.alunoRepository.find({
-        relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
-      });
+    const alunos = await this.alunoRepository.find({
+      relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
+    });
 
-      if (!alunos || alunos.length === 0) {
+    if (alunos.length === 0) {
       throw new NotFoundException('Nenhum aluno encontrado');
     }
 
@@ -77,18 +77,28 @@ export class AlunoService {
     }));
   }
 
-
-
   async obterHistoricoTodosAlunos(): Promise<Aluno[]> {
-    return await this.alunoRepository.find({
+    const aluno = await this.alunoRepository.find({
       relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
     });
+
+    if(aluno.length === 0){
+      throw new NotFoundException('Nenhum aluno encontrado');
+    }
+
+    return aluno;
   }
 
   async obterHistoricoAlunoID(alunoId: number): Promise<any> {
-    return await this.alunoRepository.findOne({
+    const aluno = await this.alunoRepository.findOne({
       where: { id: alunoId },
       relations: ['grade', 'grade.materia_grade', 'grade.materia_grade.materia', 'grade.materia_grade.nota'],
     });
+
+    if(!aluno){
+      throw new NotFoundException('Nenhum aluno encontrado');
+    }
+
+    return aluno;
   }
 }

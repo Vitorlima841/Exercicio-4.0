@@ -1,4 +1,4 @@
-import { Injectable,BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Nota } from './nota.entity';
 import { NotaCadastrarDto } from './dto/nota.cadastrar.dto';
@@ -31,15 +31,15 @@ export class NotaService {
     });
 
     if(!aluno){
-      throw new BadRequestException("Aluno não encontrado");
+      throw new NotFoundException('Nenhum aluno encontrado.');
     }
 
     const grade = await this.gradeRepository.find({
       where: { aluno: aluno },
     });
 
-    if(!grade){
-      throw new BadRequestException("Grade não encontrada");
+    if(!grade || grade.length === 0){
+      throw new NotFoundException('Nenhuma grade encontrada.');
     }
 
     const materiaGrades = await this.materia_gradeRepository
@@ -49,7 +49,7 @@ export class NotaService {
       .getMany();
 
     if (materiaGrades.length === 0) {
-      throw new BadRequestException(`O aluno ${aluno.id} não possui a materia ${data.materia}.`);
+      throw new NotFoundException(`O aluno ${aluno.id} não possui a materia ${data.materia}.`);
     }
 
     const materiaGradeIds = materiaGrades.map((mg) => mg.id);
@@ -63,9 +63,7 @@ export class NotaService {
       .getMany();
 
     if (materiaConcluida.length > 0) {
-      throw new BadRequestException(
-        'O aluno concluiu a matéria com 3 notas acima de 80.',
-      );
+      throw new BadRequestException('O aluno concluiu a matéria com 3 notas acima de 80.');
     }
 
     const nota = new Nota();
@@ -100,9 +98,7 @@ export class NotaService {
           })
           .execute();
 
-        throw new BadRequestException(
-          'Existem notas menores que 80. Todas as notas foram deletadas e é necessário reiniciar as notas para essa matéria.',
-        );
+        throw new BadRequestException('Existem notas menores que 80. Todas as notas foram deletadas e é necessário reiniciar as notas para essa matéria.',);
       }
 
       nota.verificaConcluir = true;

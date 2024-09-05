@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { In, Repository } from 'typeorm';
 import { Grade } from './grade.entity';
 import { GradeCadastrarDto } from './dto/grade.cadastrar.dto';
@@ -54,7 +54,7 @@ export class GradeService {
     })
 
     if(!aluno){
-      throw new BadRequestException(`Aluno não encontrado`);
+      throw new NotFoundException('Nenhum aluno encontrado.');
     }
 
     const gradesExistentes = await this.gradeRepository.find({
@@ -91,7 +91,7 @@ export class GradeService {
       return <ResultadoDto>{
         status: true,
         mensagem: "Grade cadastrada!",
-        // result: materia_grade
+        result: materia_grade
       };
     } catch (error) {
       return <ResultadoDto>{
