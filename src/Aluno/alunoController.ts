@@ -9,7 +9,7 @@ export class AlunoController{
 
   @Post()
   async cadastrarAluno(@Body()data: AlunoCadastrarDto): Promise<ResultadoDto>{
-    return this.alunoService.cadastrarAluno(data)//teste
+    return this.alunoService.cadastrarAluno(data)
   }
 
   @Get('ordenados')
