@@ -9,7 +9,7 @@ import { Grade } from '../gradeEscolar/grade.entity';
 @Entity('aluno')
 export class Aluno {
   @PrimaryGeneratedColumn()
-  id: number;//teste2
+  id: number;//fibal
 
   @Column({ length: 100, nullable: false })
   nome: string;
