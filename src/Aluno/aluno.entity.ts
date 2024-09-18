@@ -20,4 +20,5 @@ export class Aluno {
   //boa pegunta
   @OneToMany(() => Grade, (grade) => grade.aluno)
   grade: Grade[];
+  //tentand
 }
