@@ -24,4 +24,3 @@ export class Aluno {
 
 //colocando masi coisas
   //tentand
-}
