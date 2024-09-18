@@ -14,7 +14,7 @@ export class Aluno {
   @Column({ length: 100, nullable: false })
   nome: string;
 
-  //aprendneo a ausar o goti
+  //aprendneo a usar o git
 
   @OneToMany(() => Grade, (grade) => grade.aluno)
   grade: Grade[];
