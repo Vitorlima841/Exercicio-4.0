@@ -16,7 +16,7 @@ export class Aluno {
 
   //aprendneo a usar o git
 //nao sei oq colocar
-
+//teste
   //boa pegunta
   @OneToMany(() => Grade, (grade) => grade.aluno)
   grade: Grade[];
