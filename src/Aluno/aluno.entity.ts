@@ -11,6 +11,8 @@ export class Aluno {
   @PrimaryGeneratedColumn()
   id: number;//teste2
 
+  //int naosei
+
   @Column({ length: 100, nullable: false })
   nome: string;
 
