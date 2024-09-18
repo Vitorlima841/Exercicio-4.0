@@ -17,4 +17,4 @@ export class Aluno {
   @OneToMany(() => Grade, (grade) => grade.aluno)
   grade: Grade[];
 }
-//ytestando coisasa novas
+//ytestando coisasa novas legais
