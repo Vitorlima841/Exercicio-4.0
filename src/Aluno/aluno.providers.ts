@@ -7,4 +7,4 @@ export const alunoProviders = [
     useFactory: (dataSource: DataSource) => dataSource.getRepository(Aluno),
     inject: ['DATA_SOURCE'],
   },
-];
+];//aesrygsdf

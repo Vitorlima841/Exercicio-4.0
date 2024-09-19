@@ -26,4 +26,4 @@ export class AlunoController{
   async HistoricoId(@Param('id') id: number) {
     return this.alunoService.HistoricoId(id);
   }
-}
+}//\tstsdtdtgz
