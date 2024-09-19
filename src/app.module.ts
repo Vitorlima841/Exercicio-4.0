@@ -23,6 +23,6 @@ import { APP_PIPE } from '@nestjs/core';
     {//asdasdasfaf
       provide: APP_PIPE,
       useClass: ValidationPipe,
-    },],
+    },],//resdf
 })
 export class AppModule {}
