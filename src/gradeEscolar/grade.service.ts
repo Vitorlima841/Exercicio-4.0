@@ -23,7 +23,7 @@ export class GradeService {
 
     @InjectRepository(Materia)
     private materiaRepository: Repository<Materia>,
-  ) {}
+  ) {}//afsdf
 
 
   async mostrarGrades(): Promise<Grade[]> {

@@ -20,9 +20,9 @@ import { APP_PIPE } from '@nestjs/core';
   ],
   controllers: [AppController],
   providers: [AppService,
-    {
+    {//asdasdasfaf
       provide: APP_PIPE,
       useClass: ValidationPipe,
-    },],
+    },],//resdf
 })
 export class AppModule {}

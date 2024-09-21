@@ -16,4 +16,4 @@ export class Aluno {
   nome: string;
   @OneToMany(() => Grade, (grade) => grade.aluno)
   grade: Grade[];
-}
+}//asdasd

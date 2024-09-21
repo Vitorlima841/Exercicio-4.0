@@ -20,5 +20,5 @@ export class Grade {
 
   @OneToMany(() => Materia_grade, (materia_grade) => materia_grade.grade)
   materia_grade: Materia_grade[];
-}
+}//asdawdwa
 //iytutyu
